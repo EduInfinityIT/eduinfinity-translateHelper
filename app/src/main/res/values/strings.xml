@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">教育无边界翻译APP</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="copyRight">© 2014-2015 relaxgo and Eduinfinity 版权所有</string>
+    <string name="title_activity_class_menu">课程表</string>
+    <string name="course_menu">课程菜单</string>
+    <string name="motto">勿忘初心，方得始终</string>
+
+</resources>
