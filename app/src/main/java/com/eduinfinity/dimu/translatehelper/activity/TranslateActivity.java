@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.eduinfinity.dimu.translatehelper.R;
+import com.eduinfinity.dimu.translatehelper.activity.adapter.SrtViewPageAdapter;
 
 import java.util.ArrayList;
 
@@ -23,12 +24,10 @@ public class TranslateActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_translate);
 
-        mViewPager = new ViewPager(this);
-        mViewPager.setId(R.id.subtitle_list_pager);
-        setContentView(mViewPager);
-
-
+        mViewPager = (ViewPager) findViewById(R.id.subtitle_list_pager);
+        mViewPager.setAdapter(new SrtViewPageAdapter());
     }
 
 
