@@ -19,8 +19,8 @@ public class TextTrackImpl {
     }
 
     public static class Line {
-        private long startTime, endTime;
-        private String lineString;
+        public long startTime, endTime;
+        public String lineString;
 
         public Line(long startTime, long endTime, String lineString) {
             this.startTime = startTime;

@@ -26,7 +26,7 @@ public class StartActivity extends Activity {
         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/wawasc.otf");
         tv.setTypeface(face);
 
-        new Handler().postDelayed(r, 2000);// 1秒后关闭，并跳转到主页面
+        new Handler().postDelayed(r, 100);// 1秒后关闭，并跳转到主页面
     }
 
     Runnable r = new Runnable() {
@@ -34,6 +34,7 @@ public class StartActivity extends Activity {
         public void run() {
         // TODO Auto-generated method stub
             Intent intent = new Intent();
+//            intent.setClass(StartActivity.this, ClassMenuActivity.class);
             intent.setClass(StartActivity.this, ClassMenuActivity.class);
             startActivity(intent);
             finish();

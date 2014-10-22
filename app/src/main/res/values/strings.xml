@@ -11,5 +11,6 @@
     <string name="title_activity_class_menu">课程表</string>
     <string name="course_menu">课程菜单</string>
     <string name="motto">勿忘初心，方得始终</string>
+    <string name="storageUnvalide">储存空间不可用</string>
 
 </resources>
