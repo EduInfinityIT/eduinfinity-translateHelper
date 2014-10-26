@@ -1,7 +1,7 @@
 package com.eduinfinity.dimu.translatehelper.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +10,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eduinfinity.dimu.translatehelper.R;
+import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
+import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 
 import java.util.List;
 
 /**
  * Created by Dimu on 10/22/14.
  */
-public class FileListAdapter extends BaseAdapter {
+public class ModelListAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
-    private List<String> mList;
+    private List<Model> mList;
     private Context mContext;
 
-    public FileListAdapter(Context context, List<String> list) {
+    public ModelListAdapter(Context context, List<Model> list) {
         mList = list;
         mContext = context;
         mInflater = LayoutInflater.from(context);
@@ -34,7 +36,7 @@ public class FileListAdapter extends BaseAdapter {
     }
 
     @Override
-    public String getItem(int position) {
+    public Model getItem(int position) {
         return mList.get(position);
     }
 
@@ -53,7 +55,9 @@ public class FileListAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.fileName.setText(getItem(position));
+        viewHolder.fileName.setText(getItem(position).getValue(Resource.NAME));
+        int[] colors = {0xddcb5050, 0xdde1776f, 0xdde5e293, 0xdd78abf2, 0xdd5cc45f};
+        convertView.setBackgroundColor(colors[getItem(position).getStatus()]);
         return convertView;
     }
 

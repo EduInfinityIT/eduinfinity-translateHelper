@@ -1,4 +1,4 @@
-package com.eduinfinity.dimu.translatehelper.activity.adapter;
+package com.eduinfinity.dimu.translatehelper.adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;

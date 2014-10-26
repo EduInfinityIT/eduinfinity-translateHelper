@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.eduinfinity.dimu.translatehelper.R;
-import com.eduinfinity.dimu.translatehelper.activity.adapter.SrtViewPageAdapter;
+import com.eduinfinity.dimu.translatehelper.adapter.SrtViewPageAdapter;
 import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
 import com.eduinfinity.dimu.translatehelper.utils.TextTrackImpl;
 
@@ -21,7 +21,8 @@ import java.util.List;
 public class TranslateActivity extends Activity {
     private static final String TAG = "TranslateActivity";
 
-    public static final String FILENAME = "FILENAME";
+    public static final String FILE_NAME = "FILE_NAME";
+    public static final String FILE_PATH = "FILE_PATH";
 
     private ViewPager mViewPager;
     private LayoutInflater inflate;
@@ -37,16 +38,16 @@ public class TranslateActivity extends Activity {
 
 
         Intent intent = getIntent();
-        String fileName = intent.getStringExtra(FILENAME);
+        String fileName = intent.getStringExtra(FILE_NAME);
+        String filePath = intent.getStringExtra(FILE_PATH);
 
         TextTrackImpl tack = null;
-        if (!fileName.equals("") || fileName != null) {
-            tack = FileUtils.readFile(fileName, this);
+        if (fileName != null || !fileName.equals("")) {
+            Log.i(TAG, "parse " + filePath + fileName);
+            tack = FileUtils.readFile(filePath, fileName, this);
         }
         lineList = tack.getSubs();
         Log.i(TAG, "parse " + tack.getSubs().get(0));
-
-
     }
 
     @Override

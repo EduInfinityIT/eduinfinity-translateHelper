@@ -20,7 +20,7 @@ public class FileScan {
 
     private static final String TAG = "FileScan";
 
-    public static HashMap<String, String> getMusicListOnSys(File file) {
+    public static HashMap<String, String> getFileListOnSys(File file) {
 
         //从根目录开始扫描
         Log.i(TAG, file.getPath());

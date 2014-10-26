@@ -8,5 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_file_name" />
+        android:id="@+id/textView_file_name"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/middle_text" />
 </LinearLayout>
