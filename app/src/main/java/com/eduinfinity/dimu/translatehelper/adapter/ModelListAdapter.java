@@ -31,6 +31,18 @@ public class ModelListAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getViewTypeCount() {
+        // menu type count
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // current menu type
+        return getItem(position).getStatus();
+    }
+
+    @Override
     public int getCount() {
         return mList.size();
     }
@@ -59,6 +71,13 @@ public class ModelListAdapter extends BaseAdapter {
         int[] colors = {0xddcb5050, 0xdde1776f, 0xdde5e293, 0xdd78abf2, 0xdd5cc45f};
         convertView.setBackgroundColor(colors[getItem(position).getStatus()]);
         return convertView;
+    }
+
+    public void up2first(int position) {
+        Model model = mList.get(position);
+        mList.remove(position);
+        mList.add(0, model);
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {

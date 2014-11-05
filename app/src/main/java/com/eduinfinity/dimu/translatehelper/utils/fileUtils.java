@@ -22,14 +22,17 @@ import java.io.InputStream;
 public class FileUtils {
 
     private static final String TAG = "FileUtils";
-    public static final String rootFolderName = Config.rootFolderName;
-    public static final String ProjectConfig = Config.ProjectConfig;
-    public static final String ResourceConfig = Config.ResourceConfig;
 
-    public static TextTrackImpl readFile(String path, String fileName, Activity activity) {
+    public static TextTrackImpl readRes2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
+        return null;
+    }
+
+    public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
+        return null;
+    }
+
+    public static TextTrackImpl read2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
         String allString = "";
-
-        TextTrackImpl textTrackImpl = new TextTrackImpl();
         try {
             FileInputStream fis = getInputStream(path, fileName, activity);
             if (fis == null) return textTrackImpl;
@@ -42,7 +45,6 @@ public class FileUtils {
         }
         return textTrackImpl;
     }
-
 
     public static FileInputStream getInputStream(String path, String fileName, Activity activity) {
         String allString = "";
@@ -62,13 +64,18 @@ public class FileUtils {
 
     public static File getFile(String path, String fileName, Activity activity) {
         File file = null;
-        File newdir = new File(Environment.getExternalStorageDirectory().toString() + rootFolderName + path);
+        File newdir = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path);
         if (!newdir.exists()) {
             Log.e(TAG, "Directory not created");
             newdir.mkdirs();
         }
-        file = new File(Environment.getExternalStorageDirectory().toString() + rootFolderName + path, fileName);
+        file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, fileName);
         return file;
+    }
+
+    public static boolean isExist(String path, String name) {
+        File file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, name);
+        return file.exists();
     }
 
     public static File isInitFolder(String relativePath) {
@@ -110,7 +117,7 @@ public class FileUtils {
 
         FileOutputStream fos = null;
 //        File file = getFile(fileName, activity);
-        File file = new File(Environment.getExternalStorageDirectory().toString() + rootFolderName + path, fileName);
+        File file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, fileName);
         file.getParentFile().mkdirs();
         try {
             fos = new FileOutputStream(file);
@@ -155,7 +162,6 @@ public class FileUtils {
         }
         return allString;
     }
-
 
     public static boolean saveBitmap(String path, String fileName, Bitmap bitmap, Activity activity) {
         boolean isOK = existSDcard() && isExternalStorageWritable();
@@ -217,7 +223,7 @@ public class FileUtils {
 
         Bitmap bitmap = null;
         try {
-            String filePath = Environment.getExternalStorageDirectory().toString() + rootFolderName + fileName + ".png";
+            String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
             File file = new File(filePath);
             if (file.exists()) {
                 bitmap = BitmapFactory.decodeFile(filePath);
@@ -231,10 +237,23 @@ public class FileUtils {
     }
 
     public static void delBitmap(String fileName) {
-        String filePath = Environment.getExternalStorageDirectory().toString() + rootFolderName + fileName + ".png";
+        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
         File file = new File(filePath);
         if (file.exists()) {
             file.delete();
         }
+    }
+
+    public static void delResource(String pro, String res) {
+        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + pro;
+        File file1 = new File(filePath + Config.SourceFolder, res + "srt");
+        File file2 = new File(filePath + Config.TransFolder, res + "srt");
+        if (file1.exists()) {
+            file1.delete();
+        }
+        if (file2.exists()) {
+            file2.delete();
+        }
+
     }
 }

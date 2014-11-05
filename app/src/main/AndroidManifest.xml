@@ -17,7 +17,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.eduinfinity.dimu.translatehelper.activity.StartActivity"
+            android:name=".activity.StartActivity"
+            android:theme="@style/AppThemeNoTitle"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name">
             <intent-filter>
@@ -27,11 +28,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.eduinfinity.dimu.translatehelper.activity.ClassMenuActivity"
-            android:label="@string/title_activity_class_menu"></activity>
+            android:name=".activity.LessonMenuActivity"
+            android:label="@string/title_activity_class_menu" />
         <activity
-            android:name="com.eduinfinity.dimu.translatehelper.activity.TranslateActivity"
-            android:label="@string/app_name"></activity>
+            android:name=".activity.TranslateActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".activity.ProjectActivity"
+            android:label="@string/title_activity_project"></activity>
     </application>
 
 </manifest>

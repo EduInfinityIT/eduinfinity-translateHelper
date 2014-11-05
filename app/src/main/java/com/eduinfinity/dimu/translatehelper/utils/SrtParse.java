@@ -14,6 +14,7 @@ public class SrtParse {
         TextTrackImpl track = new TextTrackImpl();
         String numberString;
         while ((numberString = r.readLine()) != null) {
+            int index = Integer.parseInt(numberString);
             String timeString = r.readLine();
             String lineString = "";
             String s;
@@ -23,7 +24,7 @@ public class SrtParse {
             long startTime = parse(timeString.split("-->")[0]);
             long endTime = parse(timeString.split("-->")[1]);
 
-            track.getSubs().add(new TextTrackImpl.Line(startTime, endTime, lineString));
+            track.getSubs().add(new TextTrackImpl.Line(index, startTime, endTime, lineString));
         }
         return track;
     }
@@ -36,6 +37,14 @@ public class SrtParse {
 
         return hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000 + millies;
 
+    }
+
+    public static String convertTime2String(long t) {
+        int h = (int) (t / (60 * 60 * 1000));
+        int m = (int) ((t % 60 * 60 * 1000) / 1000);
+        int s = (int) (t % (60 * 1000));
+        int mm = (int) (t % 1000);
+        return "" + h + ":" + m + ":" + s + "," + mm;
     }
 }
 

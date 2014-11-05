@@ -9,6 +9,7 @@ import com.eduinfinity.dimu.translatehelper.adapter.model.Project;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 import com.eduinfinity.dimu.translatehelper.utils.Config;
 import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
+import com.eduinfinity.dimu.translatehelper.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Center {
     private Activity classActivity;
     private Project currentProject;
     private EventBus eventBus = EventBus.getDefault();
+    private Context context;
 
     public static Center getInstance() {
         return ourInstance;
@@ -64,23 +66,12 @@ public class Center {
         this.classActivity = classActivity;
     }
 
-    public Activity getClassActivity() {
+    public Activity getContext() {
         return classActivity;
     }
 
-    public void addResource(Resource resource) {
-        String proSlug = resource.getValue(Resource.PROJECT);
-        if (currentProject != null && currentProject.getValue(Project.SLUG).equals(proSlug)) {
-            resourceList.add(resource);
-            resourceAdapter.notifyDataSetChanged();
-            Log.i(TAG, "addResource");
-        }
-        eventBus.post(resource);
-    }
-
-    public void onEventAsync(Resource resource) {
-        boolean result = FileUtils.writeFileOUTStorage(Config.ResourceFilePathRoot + resource.getValue(Resource.PROJECT) + "/", resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.CONTENT), classActivity);
-        if (result) resource.setStatus(Model.UPDATED);
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public Project getCurrentProject() {
@@ -89,5 +80,32 @@ public class Center {
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
+    }
+
+    public void onEventAsync(Resource resource) {
+        String proSlug = resource.getValue(Resource.PROJECT);
+        if (currentProject != null && currentProject.getValue(Project.SLUG).equals(proSlug)) {
+            resourceList.add(resource);
+            resourceAdapter.notifyDataSetChanged();
+            Log.i(TAG, "addResource");
+        }
+        boolean result = FileUtils.writeFileOUTStorage("/" + resource.getValue(Resource.PROJECT), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.CONTENT), classActivity);
+        if (result) resource.setStatus(Model.RES_DOWNED);
+    }
+
+    public void onEventMainThread(Project project) {
+        String slug = project.getValue(Model.SLUG);
+
+        for (int i = 0; i < projectList.size(); i++) {
+            Model model = projectList.get(i);
+            if (model.getValue(Model.SLUG).equals(slug)) {
+                return;
+            }
+        }
+        projectList.add(project);
+        projectAdapter.notifyDataSetChanged();
+        JsonUtils.writeJson("/", Config.ProjectConfig, projectList, getContext());
+        List<Model> list = project.getResourceList();
+        JsonUtils.writeJson("/" + slug, Config.ResourceConfig, list, getContext());
     }
 }

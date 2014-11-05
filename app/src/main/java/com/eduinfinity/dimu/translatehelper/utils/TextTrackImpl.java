@@ -19,13 +19,17 @@ public class TextTrackImpl {
     }
 
     public static class Line {
+        public int index;
         public long startTime, endTime;
         public String lineString;
 
-        public Line(long startTime, long endTime, String lineString) {
+        public Line(int index, long startTime, long endTime, String lineString) {
+            this.index = index;
             this.startTime = startTime;
             this.endTime = endTime;
             this.lineString = lineString;
         }
     }
+
+
 }

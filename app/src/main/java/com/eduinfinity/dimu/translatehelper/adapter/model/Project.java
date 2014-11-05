@@ -1,6 +1,9 @@
 package com.eduinfinity.dimu.translatehelper.adapter.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,11 +13,11 @@ public class Project implements Model {
     private Map<String, String> content = new HashMap<String, String>();
     private Map<String, Resource> resourceMap = new HashMap<String, Resource>();
     public static final String RESOURCE = "resources";
-    public static final String LAST_UPDATED = "last_updated";
-    public static final String SOURCE_LANGUAGE_CODE = "source_language_code";
-    public static final String LONG_DESCRIPTION = "long_description";
-    public static final String[] KEYS = {SLUG, NAME, RESOURCE, LAST_UPDATED, SOURCE_LANGUAGE_CODE, LONG_DESCRIPTION};
-    private int currentStatus = Model.NOT_INIT;
+    //    public static final String LAST_UPDATED = "last_updated";
+//    public static final String SOURCE_LANGUAGE_CODE = "source_language_code";
+//    public static final String LONG_DESCRIPTION = "long_description";
+    public static final String[] KEYS = {SLUG, NAME, RESOURCE};
+    private int currentStatus = Model.INIT;
 
     public Project() {
     }
@@ -56,6 +59,15 @@ public class Project implements Model {
 
     public Map<String, Resource> getResourceMap() {
         return resourceMap;
+    }
+
+    public List<Model> getResourceList() {
+        List<Model> list = new ArrayList<Model>();
+        Collection<Resource> collection = resourceMap.values();
+        for (Model o : collection) {
+            list.add(o);
+        }
+        return list;
     }
 
     public Resource getResource(String slug) {

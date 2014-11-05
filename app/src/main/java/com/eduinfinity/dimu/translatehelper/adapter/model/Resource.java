@@ -1,6 +1,9 @@
 package com.eduinfinity.dimu.translatehelper.adapter.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,22 +12,22 @@ import java.util.Map;
 public class Resource implements Model {
     private Map<String, String> content = new HashMap<String, String>();
 
-    public static final String MIMETYPE = "mimetype";
     public static final String CONTENT = "content";
     public static final String PROJECT = "project";
-    public static final String[] KEYS = {NAME, SLUG, MIMETYPE, CONTENT, PROJECT};
+//    public static final String TRANSLATE = "translate";
+
     private int currentStatus = Model.INIT;
 
     public Resource() {
     }
 
     @Override
-    public synchronized int getStatus() {
+    public int getStatus() {
         return currentStatus;
     }
 
     @Override
-    public void setStatus(int t) {
+    public synchronized void setStatus(int t) {
         currentStatus = t;
     }
 
@@ -49,4 +52,6 @@ public class Resource implements Model {
     public String getValue(String key) {
         return content.get(key);
     }
+
+
 }

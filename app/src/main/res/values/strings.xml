@@ -10,14 +10,16 @@
     <string name="copyRight">© 2014 relaxgo &amp; Eduinfinity</string>
     <string name="title_activity_class_menu">课程表</string>
     <string name="course_menu">课程菜单</string>
+    <string name="add_course_menu">添加课程</string>
     <string name="motto">勿忘初心，方得始终</string>
     <string name="storageUnvalide">储存空间不可用</string>
-    <string name="segmentation"> <![CDATA[-->>]]> </string>
+    <string name="segmentation"><![CDATA[    —>>    ]]></string>
     <string name="sdcard_readonly">抱歉，SD卡映射为只读，而APP需要其可写入</string>
     <string name="sdcard_shared">抱歉，APP无法在手机映射为USB设备时运行</string>
     <string name="no_sdcard">抱歉，APP只在插入SD卡时运行</string>
     <string name="resquestProjectFailure">请求课程资源失败</string>
     <string name="resquestResourceFailure">请求资源失败</string>
     <string name="resposeNotdone">返回结果未处理</string>
+    <string name="title_activity_project">课程菜单</string>
 
 </resources>
