@@ -53,7 +53,7 @@ public class TXRestClientUsage {
                                     for (int j = 0; j < resArray.length(); j++) {
                                         try {
                                             JSONObject resItem = resArray.getJSONObject(j);
-                                            Resource resource = new Resource();
+                                            Resource resource = new Resource(slug);
                                             resource.putValue(Resource.SLUG, resItem.getString(Resource.SLUG));
                                             resource.putValue(Resource.NAME, resItem.getString(Resource.NAME));
                                             resource.putValue(Resource.PROJECT, slug);
@@ -85,30 +85,20 @@ public class TXRestClientUsage {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, headers.toString());
                 Log.i(TAG, "success res" + projectSlug + "  " + resourceSlug);
-                Project project = null;
-                if (center.getCurrentProject().getValue(Model.SLUG).equals(projectSlug)) {
-                    project = center.getCurrentProject();
-                } else {
-                    for (Model p : center.getProjectList()) {
-                        if (p.getValue(Model.SLUG).equals(projectSlug)) project = (Project) p;
-                    }
-                }
+                Project project = center.getProject(projectSlug);
                 Resource resource = project.getResource(resourceSlug);
+                String content = "";
                 try {
-                    resource.putValue(Resource.CONTENT, response.getString(Resource.CONTENT));
+                    content = response.getString(Resource.CONTENT);
+                    resource.putValue(Resource.SOURCE, content);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, e.toString());
                 }
                 resource.setStatus(Model.RES_DOWNED);
-                Center center = Center.getInstance();
-                List<Model> projectList = center.getProjectList();
-                for (Model pro : projectList) {
-                    if (pro.getValue(Project.SLUG).equals(projectSlug))
-                        ((Project) pro).putResource(resourceSlug, resource);
-                }
+                project.putResource(resourceSlug, resource);
                 eventBus.post(resource);
-
+                eventBus.post(new Resource.Source(resource));
             }
         });
     }
@@ -119,14 +109,20 @@ public class TXRestClientUsage {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.i(TAG, "success  trans" + projectSlug + "  " + resourceSlug);
-                Project project = null;
-                if (center.getCurrentProject().getValue(Model.SLUG).equals(projectSlug)) {
-                    project = center.getCurrentProject();
-                } else {
-                    for (Model p : center.getProjectList()) {
-                        if (p.getValue(Model.SLUG).equals(projectSlug)) project = (Project) p;
-                    }
+                Project project = center.getProject(projectSlug);
+                Resource resource = project.getResource(resourceSlug);
+                String content = "";
+                try {
+                    content = response.getString(Resource.CONTENT);
+                    resource.putValue(Resource.TRANSLATE, content);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.toString());
                 }
+                resource.setStatus(Model.TRANS_DOWNED);
+                project.putResource(resourceSlug, resource);
+                eventBus.post(resource);
+                eventBus.post(new Resource.Translate(resource));
             }
         });
     }
@@ -156,7 +152,8 @@ public class TXRestClientUsage {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-            Log.i(TAG, errorResponse.toString());
+            if (errorResponse == null) Log.i(TAG, "error and errorResponse null");
+            else Log.i(TAG, errorResponse.toString());
             Toast.makeText(Center.getInstance().getContext(), R.string.resquestResourceFailure, Toast.LENGTH_LONG).show();
         }
 

@@ -2,6 +2,7 @@ package com.eduinfinity.dimu.translatehelper.utils;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
@@ -20,7 +21,7 @@ public class JsonUtils {
 //    private static final String COURSE = "course.config";
 
 
-    public static synchronized boolean writeJson(String path, String name, List<Model> modelList, Activity activity) {
+    public static synchronized boolean writeJson(String path, String name, List<Model> modelList,Context context) {
         String allString = "";
         try {
             JSONArray courseArray = new JSONArray();
@@ -42,13 +43,13 @@ public class JsonUtils {
             Log.i(TAG, "create  " + name + " err " + e);
             return false;
         }
-        return FileUtils.writeFileOUTStorage(path, name, allString, activity);
+        return FileUtils.writeFileOUTStorage(path, name, allString, context);
     }
 
-    public static List<Model> parseProjectList(String path, String fileName, List<Model> projects, Activity activity) {
+    public static List<Model> parseProjectList(String path, String fileName, List<Model> projects) {
         String allString = "";
         projects.clear();
-        allString = FileUtils.readFileOutStorage(path, fileName, activity);
+        allString = FileUtils.readFileOutStorage(path, fileName);
         if (allString == null || allString.equals("")) return projects;
         try {
             JSONArray jsonArray = new JSONArray(allString);
@@ -74,21 +75,23 @@ public class JsonUtils {
         return projects;
     }
 
-    public static List<Model> parseResourceList(String path, String fileName, List<Model> resources, Activity activity) {
+    public static List<Model> parseResourceList(String path, String fileName, List<Model> resources) {
         String allString = "";
         resources.clear();
-        allString = FileUtils.readFileOutStorage(path, fileName, activity);
+        allString = FileUtils.readFileOutStorage(path, fileName);
         if (allString == null || allString.equals("")) return resources;
-        resources = parseResourceList(allString, resources);
+        String projectSlug = path.split("/")[1];
+        resources = parseResourceList(allString, resources, projectSlug);
+        Log.w(TAG, "project slug" + projectSlug);
         return resources;
     }
 
-    private static List<Model> parseResourceList(String allString, List<Model> resources) {
+    private static List<Model> parseResourceList(String allString, List<Model> resources, String slug) {
         try {
             JSONArray jsonArray = new JSONArray(allString);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject modelItem = jsonArray.getJSONObject(i);
-                Resource resource = new Resource();
+                Resource resource = new Resource(slug);
                 for (int j = 0; j < Resource.KEYS.length; j++) {
                     String s = Resource.KEYS[j];
                     try {

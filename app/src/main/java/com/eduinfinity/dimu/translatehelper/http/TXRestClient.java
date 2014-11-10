@@ -6,6 +6,8 @@ package com.eduinfinity.dimu.translatehelper.http;
 
 import android.util.Log;
 
+import com.eduinfinity.dimu.translatehelper.activity.LessonMenuActivity;
+import com.eduinfinity.dimu.translatehelper.adapter.Center;
 import com.loopj.android.http.*;
 
 import org.apache.http.auth.AuthScope;
@@ -24,7 +26,9 @@ public class TXRestClient {
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {
-        client.setBasicAuth("relaxgo", "126bhgn333");
+        String id = Center.getInstance().getID();
+        String pw = Center.getInstance().getPassWord();
+        client.setBasicAuth(id, pw);
         return BASE_URL + relativeUrl;
     }
 }

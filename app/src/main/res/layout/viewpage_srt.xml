@@ -5,6 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="index"
+        android:textColor="@color/black_text"
+        android:textSize="@dimen/middle_text"
+        android:layout_margin="2dp"
+        android:id="@+id/textView_index" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,12 +23,6 @@
         android:paddingBottom="3dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="index"
-            android:layout_margin="2dp"
-            android:id="@+id/textView_index" />
 
         <TextView
             android:layout_width="wrap_content"

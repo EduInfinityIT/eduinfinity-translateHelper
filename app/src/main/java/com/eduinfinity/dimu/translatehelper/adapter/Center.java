@@ -2,8 +2,10 @@ package com.eduinfinity.dimu.translatehelper.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
+import com.eduinfinity.dimu.translatehelper.activity.LessonMenuActivity;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Project;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
@@ -31,6 +33,9 @@ public class Center {
     private Project currentProject;
     private EventBus eventBus = EventBus.getDefault();
     private Context context;
+    private String ID = "asdfsdf";
+    private String passWord = "saasdfad";
+    private boolean isPassWord = false;
 
     public static Center getInstance() {
         return ourInstance;
@@ -66,8 +71,8 @@ public class Center {
         this.classActivity = classActivity;
     }
 
-    public Activity getContext() {
-        return classActivity;
+    public Context getContext() {
+        return classActivity.getApplicationContext();
     }
 
     public void setContext(Context context) {
@@ -82,15 +87,34 @@ public class Center {
         this.currentProject = currentProject;
     }
 
-    public void onEventAsync(Resource resource) {
-        String proSlug = resource.getValue(Resource.PROJECT);
-        if (currentProject != null && currentProject.getValue(Project.SLUG).equals(proSlug)) {
-            resourceList.add(resource);
-            resourceAdapter.notifyDataSetChanged();
-            Log.i(TAG, "addResource");
-        }
-        boolean result = FileUtils.writeFileOUTStorage("/" + resource.getValue(Resource.PROJECT), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.CONTENT), classActivity);
-        if (result) resource.setStatus(Model.RES_DOWNED);
+
+    public void onEventAsync(Resource.Translate data) {
+        Resource resource = data.resource;
+        FileUtils.writeFileOUTStorage(resource.getTransPath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.TRANSLATE), classActivity);
+    }
+
+    public void onEventAsync(Resource.Source data) {
+        Resource resource = data.resource;
+        FileUtils.writeFileOUTStorage(resource.getSourcePath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.SOURCE), classActivity);
+    }
+
+    public void onEventMainThread(Resource resource) {
+//        String proSlug = resource.getValue(Resource.PROJECT);
+//        if (currentProject != null && currentProject.getValue(Project.SLUG).equals(proSlug)) {
+//            int i = 0;
+//            boolean isHave = false;
+//            for (; i < resourceList.size(); i++) {
+//                Resource res = (Resource) resourceList.get(i);
+//                if (res.getValue(Model.SLUG).equals(resource.getValue(Model.SLUG))) {
+//                    resourceList.set(i, resource);
+//                    isHave = true;
+//                    break;
+//                }
+//            }
+//            if (!isHave) resourceList.add(resource);
+//            resourceAdapter.notifyDataSetChanged();
+//            Log.i(TAG, "addResource");
+//        }
     }
 
     public void onEventMainThread(Project project) {
@@ -107,5 +131,33 @@ public class Center {
         JsonUtils.writeJson("/", Config.ProjectConfig, projectList, getContext());
         List<Model> list = project.getResourceList();
         JsonUtils.writeJson("/" + slug, Config.ResourceConfig, list, getContext());
+    }
+
+    public Project getProject(String projectSlug) {
+        Project project = null;
+        if (getCurrentProject().getValue(Model.SLUG).equals(projectSlug)) {
+            project = getCurrentProject();
+        } else {
+            for (Model p : getProjectList()) {
+                if (p.getValue(Model.SLUG).equals(projectSlug)) project = (Project) p;
+            }
+        }
+        return project;
+    }
+
+    public String getID() {
+        if (!isPassWord) {
+            Intent intent = new Intent(getContext(), LessonMenuActivity.class);
+            classActivity.startActivity(intent);
+        }
+        return ID;
+    }
+
+    public String getPassWord() {
+        if (!isPassWord) {
+            Intent intent = new Intent(getContext(), LessonMenuActivity.class);
+            classActivity.startActivity(intent);
+        }
+        return passWord;
     }
 }

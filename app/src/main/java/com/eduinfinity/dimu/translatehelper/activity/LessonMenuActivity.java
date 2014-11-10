@@ -50,6 +50,11 @@ public class LessonMenuActivity extends Activity {
     private EditText editText_courseName;
     private EventBus eventBus = EventBus.getDefault();
     private TXRestClientUsage txRestClientUsage = new TXRestClientUsage();
+    private SwipeMenuListView listView;
+    private ModelListAdapter adapter;
+
+    private static String name;
+    private static String passWord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,7 @@ public class LessonMenuActivity extends Activity {
         StorageStatus(this);
         center.setClassActivity(this);
         init();
+        eventBus.register(this);
     }
 
     private void init() {
@@ -72,20 +78,19 @@ public class LessonMenuActivity extends Activity {
             }
         });
 
-        ModelListAdapter adapter = center.getResourceAdapter(this);
-
-        SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.listView_class_menu);
+        adapter = center.getResourceAdapter(this);
+        listView = (SwipeMenuListView) findViewById(R.id.listView_class_menu);
         loadListView(listView);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ModelListAdapter adapter = (ModelListAdapter) ((SwipeMenuAdapter) parent.getAdapter()).getWrappedAdapter();
-                Model model = adapter.getItem(position);
+                Resource model = (Resource) adapter.getItem(position);
                 adapter.up2first(position);
                 Intent intent = new Intent(LessonMenuActivity.this, TranslateActivity.class);
                 intent.putExtra(TranslateActivity.ResourceSlug, model.getValue(Model.SLUG));
-                intent.putExtra(TranslateActivity.ProjectSlug, model.getValue(Resource.PROJECT));
+                intent.putExtra(TranslateActivity.ProjectSlug, model.getProjectSlug());
                 intent.putExtra(TranslateActivity.STATUS, model.getStatus());
                 startActivity(intent);
             }
@@ -94,7 +99,7 @@ public class LessonMenuActivity extends Activity {
     }
 
     public void scanFile(String folder) {
-        File file = FileUtils.getFile(folder, "", this);
+        File file = FileUtils.getFile(folder, "");
         HashMap<String, String> files = FileScan.getFileListOnSys(file);
     }
 
@@ -166,7 +171,6 @@ public class LessonMenuActivity extends Activity {
         listView.setCloseInterpolator(new BounceInterpolator());
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -186,7 +190,7 @@ public class LessonMenuActivity extends Activity {
                 TXRestClientUsage.getProjectDetails(projectSlug);
                 return;
             }
-            JsonUtils.parseResourceList("/" + projectSlug, Config.ResourceConfig, resourceList, this);
+            JsonUtils.parseResourceList("/" + projectSlug, Config.ResourceConfig, resourceList);
             for (Model model : resourceList) {
                 project.putResource(model.getValue(Model.SLUG), (Resource) model);
             }
@@ -198,13 +202,23 @@ public class LessonMenuActivity extends Activity {
             }
         }
         center.getResourceAdapter(this).notifyDataSetChanged();
-
     }
 
     @Override
     protected void onDestroy() {
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
         if (center.getCurrentProject() != null)
             JsonUtils.writeJson("/" + center.getCurrentProject().getValue(Model.SLUG), Config.ResourceConfig, resourceList, this);
-        super.onDestroy();
+        super.onPause();
+    }
+
+    public void onEventMainThread(Resource resource) {
+        Log.e(TAG, adapter.toString());
+        adapter.notifyDataSetChanged();
     }
 }

@@ -21,5 +21,10 @@
     <string name="resquestResourceFailure">请求资源失败</string>
     <string name="resposeNotdone">返回结果未处理</string>
     <string name="title_activity_project">课程菜单</string>
+    <string name="title_activity_set_txid">SetTXIDActivity</string>
+    <string name="tx_id">T站账号</string>
+    <string name="tx_password">T站密码</string>
+    <string name="complete">完成</string>
+    <string name="cancel">取消</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.eduinfinity.dimu.translatehelper.adapter.model;
 
+import com.eduinfinity.dimu.translatehelper.utils.Config;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,11 +16,13 @@ public class Resource implements Model {
 
     public static final String CONTENT = "content";
     public static final String PROJECT = "project";
-//    public static final String TRANSLATE = "translate";
-
+    public static final String TRANSLATE = "translate";
+    public static final String SOURCE = "source";
     private int currentStatus = Model.INIT;
+    private String projectSlug;
 
-    public Resource() {
+    public Resource(String projectSlug) {
+        this.projectSlug = projectSlug;
     }
 
     @Override
@@ -54,4 +58,32 @@ public class Resource implements Model {
     }
 
 
+    public String getProjectSlug() {
+        return projectSlug;
+    }
+
+    public String getSourcePath() {
+        return "/" + projectSlug + Config.SourceFolder;
+    }
+
+    public String getTransPath() {
+        return "/" + projectSlug + Config.TransFolder;
+    }
+
+
+    public static  class Source {
+        public Resource resource ;
+        public Source(Resource data ) {
+            this.resource = data;
+
+        }
+    }
+
+    public static class Translate {
+        public Resource resource ;
+        public Translate(Resource data ) {
+            this.resource = data;
+
+        }
+    }
 }

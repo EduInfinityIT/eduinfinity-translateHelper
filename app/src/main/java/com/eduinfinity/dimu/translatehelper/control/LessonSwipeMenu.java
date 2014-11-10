@@ -1,5 +1,7 @@
 package com.eduinfinity.dimu.translatehelper.control;
 
+import android.util.Log;
+
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 import com.eduinfinity.dimu.translatehelper.http.TXRestClientUsage;
@@ -9,12 +11,14 @@ import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
  * Created by Dimu on 11/4/14.
  */
 public class LessonSwipeMenu {
+    private static final String TAG = "LessonSwipeMenu";
     public static String[] statusNextString = {"下载原文", "下载翻译", "上传翻译", "上传翻译", "删除该项"};
     public static String[] statusBackString = {"删除该项", "重置原文", "重置翻译", "重置翻译", "重置翻译"};
 
     public static void swipeNext(Resource resource, int menuType) {
-        String projectSlug = resource.getValue(Resource.PROJECT);
+        String projectSlug = resource.getProjectSlug();
         String resourceSlug = resource.getValue(Resource.SLUG);
+        Log.i(TAG, " " + menuType + " " + projectSlug + " " + resourceSlug);
         switch (menuType) {
             case Model.INIT:
                 TXRestClientUsage.getResourceContent(projectSlug, resourceSlug);
@@ -32,13 +36,12 @@ public class LessonSwipeMenu {
                 FileUtils.delResource(projectSlug, resourceSlug);
                 break;
         }
-
-
     }
 
     public static void swipeBack(Resource resource, int menuType) {
-        String projectSlug = resource.getValue(Resource.PROJECT);
+        String projectSlug = resource.getProjectSlug();
         String resourceSlug = resource.getValue(Resource.SLUG);
+        Log.i(TAG, " " + menuType + " " + projectSlug + " " + resourceSlug);
         switch (menuType) {
             case Model.INIT:
                 FileUtils.delResource(projectSlug, resourceSlug);

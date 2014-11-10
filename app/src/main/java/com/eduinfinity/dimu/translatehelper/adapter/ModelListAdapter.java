@@ -32,8 +32,7 @@ public class ModelListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        // menu type count
-        return 2;
+        return Model.typeCount;
     }
 
     @Override

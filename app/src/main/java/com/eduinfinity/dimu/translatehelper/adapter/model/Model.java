@@ -12,11 +12,12 @@ public interface Model {
     public static final int TRANS_DOWNED = 2;
     public static final int CHANGED = 3;
     public static final int UPLOADED = 4;
+    public static final int typeCount = 5;
     public static int[] statusColors = {0xddcb5050, 0xdde1776f, 0xdde5e293, 0xdd78abf2, 0xdd5cc45f};
 
     public static final String NAME = "name";
     public static final String SLUG = "slug";
-    public static final String[] KEYS = {SLUG, NAME, Resource.PROJECT};
+    public static final String[] KEYS = {SLUG, NAME};
     public static final String STATUS = "status";
 
     public int getStatus();
@@ -30,6 +31,8 @@ public interface Model {
 //    public void setContent(Map<String, String> content);
 
     public void putValue(String key, String value);
+
+
 
     public String getValue(String key);
 }

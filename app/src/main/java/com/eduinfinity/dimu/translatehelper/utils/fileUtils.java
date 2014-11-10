@@ -23,20 +23,13 @@ public class FileUtils {
 
     private static final String TAG = "FileUtils";
 
-    public static TextTrackImpl readRes2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
-        return null;
-    }
 
     public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
-        return null;
-    }
-
-    public static TextTrackImpl read2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
         String allString = "";
         try {
-            FileInputStream fis = getInputStream(path, fileName, activity);
+            FileInputStream fis = getInputStream(path, fileName);
             if (fis == null) return textTrackImpl;
-            textTrackImpl = SrtParse.parse(fis);
+            textTrackImpl = SrtParse.parseTrans(fis, textTrackImpl);
             fis.close();
             Log.i(TAG, "read " + fileName + " success" + allString);
         } catch (IOException e) {
@@ -46,9 +39,24 @@ public class FileUtils {
         return textTrackImpl;
     }
 
-    public static FileInputStream getInputStream(String path, String fileName, Activity activity) {
+    public static TextTrackImpl readRes2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
         String allString = "";
-        File file = getFile(path, fileName, activity);
+        try {
+            FileInputStream fis = getInputStream(path, fileName);
+            if (fis == null) return textTrackImpl;
+            textTrackImpl = SrtParse.parse(fis, textTrackImpl);
+            fis.close();
+            Log.i(TAG, "read " + fileName + " success" + allString);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(TAG, "read  " + fileName + "err " + e);
+        }
+        return textTrackImpl;
+    }
+
+    public static FileInputStream getInputStream(String path, String fileName) {
+        String allString = "";
+        File file = getFile(path, fileName);
         if (file == null || !file.exists()) return null;
         FileInputStream fis = null;
         try {
@@ -62,7 +70,7 @@ public class FileUtils {
     }
 
 
-    public static File getFile(String path, String fileName, Activity activity) {
+    public static File getFile(String path, String fileName) {
         File file = null;
         File newdir = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path);
         if (!newdir.exists()) {
@@ -91,10 +99,10 @@ public class FileUtils {
         return newDir;
     }
 
-    public static boolean writeFileInStorage(String fileName, String allString, Activity activity) {
+    public static boolean writeFileInStorage(String fileName, String allString,Context context) {
         Log.i(TAG, "save  " + fileName + "  " + allString);
         try {
-            FileOutputStream fos = activity.openFileOutput(fileName, Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             fos.write(allString.getBytes());
             fos.close();
             Log.i(TAG, "save  " + fileName + " success");
@@ -110,12 +118,12 @@ public class FileUtils {
     }
 
 
-    public static boolean writeFileOUTStorage(String path, String fileName, String allString, Activity activity) {
+    public static boolean writeFileOUTStorage(String path, String fileName, String allString, Context context) {
         boolean isOK = existSDcard() && isExternalStorageWritable();
         if (!isOK) return false;
         Log.i(TAG, "isOK");
-
         FileOutputStream fos = null;
+        if (allString == null) return false;
 //        File file = getFile(fileName, activity);
         File file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, fileName);
         file.getParentFile().mkdirs();
@@ -141,9 +149,9 @@ public class FileUtils {
         }
     }
 
-    public static String readFileOutStorage(String path, String fileName, Activity activity) {
+    public static String readFileOutStorage(String path, String fileName) {
         String allString = "";
-        File file = getFile(path, fileName, activity);
+        File file = getFile(path, fileName);
         if (file == null || !file.exists()) return allString;
         try {
             FileInputStream fis = new FileInputStream(file);
@@ -163,12 +171,12 @@ public class FileUtils {
         return allString;
     }
 
-    public static boolean saveBitmap(String path, String fileName, Bitmap bitmap, Activity activity) {
+    public static boolean saveBitmap(String path, String fileName, Bitmap bitmap,Context context) {
         boolean isOK = existSDcard() && isExternalStorageWritable();
         if (!isOK) return false;
         Log.i(TAG, "isOK");
         FileOutputStream fOut = null;
-        File file = getFile(path, fileName, activity);
+        File file = getFile(path, fileName);
         Log.e(TAG, "file name  " + file.getPath());
         try {
             file.createNewFile();
