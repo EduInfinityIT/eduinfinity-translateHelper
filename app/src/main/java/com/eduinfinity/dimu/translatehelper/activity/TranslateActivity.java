@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eduinfinity.dimu.translatehelper.R;
 import com.eduinfinity.dimu.translatehelper.adapter.Center;
@@ -30,6 +31,7 @@ public class TranslateActivity extends Activity {
     public static final String ResourceSlug = "ResourceSlug";
     public static final String ProjectSlug = "ProjectSlug";
     public static final String STATUS = "Status";
+    public static final String ResourceName="ProjectName";
 
     private ViewPager mViewPager;
     private LayoutInflater inflate;
@@ -37,7 +39,7 @@ public class TranslateActivity extends Activity {
     private List<TextTrackImpl.Line> lineList;
     private SrtViewPageAdapter srtViewPageAdapter;
 
-    private String resourceSlug, projectSlug;
+    private String resourceSlug, projectSlug,name;
     private int status;
 
     @Override
@@ -45,11 +47,12 @@ public class TranslateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translate);
         mViewPager = (ViewPager) findViewById(R.id.subtitle_list_pager);
-
         Intent intent = getIntent();
         resourceSlug = intent.getStringExtra(ResourceSlug);
         projectSlug = intent.getStringExtra(ProjectSlug);
+        name=intent.getStringExtra(ResourceName);
         status = intent.getIntExtra(STATUS, 0);
+        setTitle(name);
         srtViewPageAdapter = new SrtViewPageAdapter(viewList);
         mViewPager.setAdapter(srtViewPageAdapter);
 
@@ -106,6 +109,7 @@ public class TranslateActivity extends Activity {
         }
         Log.e(TAG, "" + lineList.size());
         Log.e(TAG, "" + viewList.size());
+        if(viewList.size()==0) Toast.makeText(this,R.string.parseSRTError,Toast.LENGTH_SHORT).show();
         srtViewPageAdapter.notifyDataSetChanged();
     }
 

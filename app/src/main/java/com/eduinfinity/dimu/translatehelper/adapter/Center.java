@@ -3,12 +3,13 @@ package com.eduinfinity.dimu.translatehelper.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.eduinfinity.dimu.translatehelper.activity.LessonMenuActivity;
+import com.eduinfinity.dimu.translatehelper.activity.SetTXIDActivity;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Project;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
+import com.eduinfinity.dimu.translatehelper.http.TXRestClient;
 import com.eduinfinity.dimu.translatehelper.utils.Config;
 import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
 import com.eduinfinity.dimu.translatehelper.utils.JsonUtils;
@@ -33,9 +34,9 @@ public class Center {
     private Project currentProject;
     private EventBus eventBus = EventBus.getDefault();
     private Context context;
-    private String ID = "asdfsdf";
-    private String passWord = "saasdfad";
-    private boolean isPassWord = false;
+    private String ID = "";
+    private String passWord = "";
+    private boolean hasPassWord = false;
 
     public static Center getInstance() {
         return ourInstance;
@@ -145,19 +146,34 @@ public class Center {
         return project;
     }
 
+
+    public void setIDAndPassWord(String ID, String passWord) {
+        this.ID = ID;
+        this.passWord = passWord;
+        triggerHandler(ID,passWord,true);
+        hasPassWord = true;
+    }
+
     public String getID() {
-        if (!isPassWord) {
-            Intent intent = new Intent(getContext(), LessonMenuActivity.class);
-            classActivity.startActivity(intent);
-        }
         return ID;
     }
 
     public String getPassWord() {
-        if (!isPassWord) {
-            Intent intent = new Intent(getContext(), LessonMenuActivity.class);
-            classActivity.startActivity(intent);
-        }
         return passWord;
     }
+
+
+    public void requestUser(TXRestClient.UserHandler userHandler) {
+        Intent intent = new Intent(getContext(), SetTXIDActivity.class);
+        classActivity.startActivity(intent);
+        this.userHandler = userHandler;
+    }
+
+    private TXRestClient.UserHandler userHandler;
+
+    public void triggerHandler(String id, String pw, boolean isSuccess) {
+        if (isSuccess) userHandler.getUserSuccess(id, pw);
+        else userHandler.getUserFailed(id, pw);
+    }
+
 }

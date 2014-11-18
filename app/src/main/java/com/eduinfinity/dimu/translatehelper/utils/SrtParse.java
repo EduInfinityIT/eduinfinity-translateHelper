@@ -77,7 +77,9 @@ public class SrtParse {
             }
             long startTime = parse(timeString.split("-->")[0]);
             long endTime = parse(timeString.split("-->")[1]);
+            if (index > track.getSubs().size() || track.getSubs().size() == 0) return track;
             TextTrackImpl.Line line = track.getSubs().get(index - 1);
+
             if (line.startTime == startTime && line.endTime == endTime) {
                 track.getSubs().get(index - 1).trans = lineString;
             } else {

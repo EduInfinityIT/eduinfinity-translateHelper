@@ -2,9 +2,13 @@ package com.eduinfinity.dimu.translatehelper.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -26,6 +30,8 @@ import java.util.List;
 
 public class StartActivity extends Activity {
     final static String[] mottoes = {"勿忘初心，方得始终", "打破教育边界", "Just for fun"};
+    private static final String VERSION_KEY = "VERSION_KEY";
+    private static final String TAG = StartActivity.class.getName();
     private TextView tv;
     private Center center = Center.getInstance();
 
@@ -58,7 +64,7 @@ public class StartActivity extends Activity {
         List<Model> projectList = center.getProjectList();
         projectList.clear();
         center.setContext(this.getApplicationContext());
-        JsonUtils.parseProjectList("/", Config.ProjectConfig, projectList, this);
+        JsonUtils.parseProjectList("/", Config.ProjectConfig, projectList);
         if (projectList.size() > 0) {
             Project project = (Project) projectList.get(0);
             center.setCurrentProject(project);
@@ -76,5 +82,38 @@ public class StartActivity extends Activity {
         AsyncHttpClient.blockRetryExceptionClass(ConnectionPoolTimeoutException.class);
 
         new Handler().postDelayed(r, 2000);// 2秒后关闭，并跳转到主页面
+    }
+
+    public boolean firstLoad() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            int currentVersion = info.versionCode;
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            int lastVersion = prefs.getInt(VERSION_KEY, 0);
+            if (currentVersion > lastVersion) {
+                //如果当前版本大于上次版本，该版本属于第一次启动
+                //将当前版本写入preference中，则下次启动的时候，据此判断，不再为首次启动
+                prefs.edit().putInt(VERSION_KEY, currentVersion).commit();
+                Log.i(TAG, "first load");
+//                Intent intent = new Intent(this, .class);
+//                startActivity(intent);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Log.i(TAG, "first load " + e.toString());
+            return true;
+        }
+    }
+
+    public boolean getPassWord() {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String id = prefs.getString(Config.ID, "");
+        String password = prefs.getString(Config.PASSWORD, "");
+        center.setIDAndPassWord(id, password);
+        return true;
     }
 }

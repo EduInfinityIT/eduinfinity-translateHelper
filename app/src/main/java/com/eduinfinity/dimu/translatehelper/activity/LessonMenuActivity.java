@@ -43,8 +43,8 @@ public class LessonMenuActivity extends Activity {
 
 
     private static final String TAG = "LessonMenuActivity";
+    public static final int USER = 1;
     private Center center = Center.getInstance();
-    private List<Model> projectList;
     private List<Model> resourceList;
     private TextView textView_course_menu;
     private EditText editText_courseName;
@@ -55,6 +55,7 @@ public class LessonMenuActivity extends Activity {
 
     private static String name;
     private static String passWord;
+    private Project CurrentProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +68,6 @@ public class LessonMenuActivity extends Activity {
     }
 
     private void init() {
-        projectList = center.getProjectList();
-
         textView_course_menu = (TextView) findViewById(R.id.textView_course_menu);
         textView_course_menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,12 +86,16 @@ public class LessonMenuActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ModelListAdapter adapter = (ModelListAdapter) ((SwipeMenuAdapter) parent.getAdapter()).getWrappedAdapter();
                 Resource model = (Resource) adapter.getItem(position);
-                adapter.up2first(position);
+                if (model.getStatus() < Model.RES_DOWNED) return;
                 Intent intent = new Intent(LessonMenuActivity.this, TranslateActivity.class);
+                intent.putExtra(TranslateActivity.ResourceName, model.getValue(Model.NAME));
                 intent.putExtra(TranslateActivity.ResourceSlug, model.getValue(Model.SLUG));
                 intent.putExtra(TranslateActivity.ProjectSlug, model.getProjectSlug());
                 intent.putExtra(TranslateActivity.STATUS, model.getStatus());
                 startActivity(intent);
+//                adapter.up2first(position);
+                saveResourceList();
+
             }
 //            }
         });
@@ -138,10 +141,15 @@ public class LessonMenuActivity extends Activity {
 
 //                backItem.setIcon(R.drawable.ic_delete);
                 int menuType = menu.getViewType();
-                nextItem.setBackground(new ColorDrawable(Model.statusColors[menuType]));
+                int backColorID = menuType - 1;
+                int upColorID = menuType + 1;
+                if (backColorID == -1) backColorID = 0;
+                if (upColorID == Model.statusColors.length)
+                    upColorID = Model.statusColors.length - 1;
+                nextItem.setBackground(new ColorDrawable(Model.statusColors[upColorID]));
                 nextItem.setTitle(LessonSwipeMenu.statusNextString[menuType]);
 
-                backItem.setBackground(new ColorDrawable(Model.statusColors[menuType]));
+                backItem.setBackground(new ColorDrawable(Model.statusColors[backColorID]));
                 backItem.setTitle(LessonSwipeMenu.statusBackString[menuType]);
 
                 menu.addMenuItem(nextItem);
@@ -180,7 +188,8 @@ public class LessonMenuActivity extends Activity {
     protected void onStart() {
         super.onStart();
         resourceList = center.getResourceList();
-        Project project = center.getCurrentProject();
+        Project project = CurrentProject = center.getCurrentProject();
+
         if (project == null) return;
 
         String projectSlug = project.getValue(Model.SLUG);
@@ -204,6 +213,12 @@ public class LessonMenuActivity extends Activity {
         center.getResourceAdapter(this).notifyDataSetChanged();
     }
 
+    private void saveResourceList() {
+        if (CurrentProject != null)
+            JsonUtils.writeJson("/" + CurrentProject.getValue(Model.SLUG), Config.ResourceConfig, resourceList, this);
+
+    }
+
     @Override
     protected void onDestroy() {
 
@@ -212,8 +227,7 @@ public class LessonMenuActivity extends Activity {
 
     @Override
     protected void onPause() {
-        if (center.getCurrentProject() != null)
-            JsonUtils.writeJson("/" + center.getCurrentProject().getValue(Model.SLUG), Config.ResourceConfig, resourceList, this);
+        saveResourceList();
         super.onPause();
     }
 

@@ -6,6 +6,9 @@ import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
  * Created by Dimu on 10/25/14.
  */
 public class Config {
+    public static final String ID = "TX_ID";
+    public static final String PASSWORD = "PASSWORD";
+
     public static final String SourceFolder = "/sources";
     public static final String TransFolder = "/translations";
     public static final String VideosFolder = "/videos";

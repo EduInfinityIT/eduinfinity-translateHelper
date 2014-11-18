@@ -1,7 +1,9 @@
 package com.eduinfinity.dimu.translatehelper.control;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import com.eduinfinity.dimu.translatehelper.adapter.Center;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 import com.eduinfinity.dimu.translatehelper.http.TXRestClientUsage;
@@ -13,7 +15,7 @@ import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
 public class LessonSwipeMenu {
     private static final String TAG = "LessonSwipeMenu";
     public static String[] statusNextString = {"下载原文", "下载翻译", "上传翻译", "上传翻译", "删除该项"};
-    public static String[] statusBackString = {"删除该项", "重置原文", "重置翻译", "重置翻译", "重置翻译"};
+    public static String[] statusBackString = {"删除该项", "下载原文", "下载原文", "下载翻译", "下载翻译"};
 
     public static void swipeNext(Resource resource, int menuType) {
         String projectSlug = resource.getProjectSlug();
@@ -27,10 +29,12 @@ public class LessonSwipeMenu {
                 TXRestClientUsage.getTranslateContent(projectSlug, resourceSlug);
                 break;
             case Model.TRANS_DOWNED:
-                TXRestClientUsage.postTranslateContent(projectSlug, resourceSlug);
+                Toast.makeText(Center.getInstance().getContext(),"功能待做",Toast.LENGTH_SHORT).show();
+//                TXRestClientUsage.postTranslateContent(projectSlug, resourceSlug);
                 break;
             case Model.CHANGED:
-                TXRestClientUsage.postTranslateContent(projectSlug, resourceSlug);
+                Toast.makeText(Center.getInstance().getContext(),"功能待做",Toast.LENGTH_SHORT).show();
+//                TXRestClientUsage.postTranslateContent(projectSlug, resourceSlug);
                 break;
             case Model.UPLOADED:
                 FileUtils.delResource(projectSlug, resourceSlug);
@@ -50,7 +54,7 @@ public class LessonSwipeMenu {
                 TXRestClientUsage.getResourceContent(projectSlug, resourceSlug);
                 break;
             case Model.TRANS_DOWNED:
-                TXRestClientUsage.getTranslateContent(projectSlug, resourceSlug);
+                TXRestClientUsage.getResourceContent(projectSlug, resourceSlug);
                 break;
             case Model.CHANGED:
                 TXRestClientUsage.getTranslateContent(projectSlug, resourceSlug);

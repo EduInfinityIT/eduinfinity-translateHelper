@@ -5,31 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="index"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/middle_text"
-        android:layout_margin="2dp"
-        android:id="@+id/textView_index" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
         android:orientation="horizontal">
-
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:text="index"
+            android:textColor="@color/white"
+            android:textSize="@dimen/middle_text"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:background="@drawable/circle"
+            android:id="@+id/textView_index" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="start"
             android:layout_margin="2dp"
-
             android:id="@+id/textView_startTime" />
 
         <TextView
@@ -50,18 +51,22 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="60dp"
         android:text="Large Text"
-        android:textSize="20dp"
+        android:textSize="16dp"
+        android:padding="7dp"
         android:textIsSelectable="true"
         android:id="@+id/textView_lineString" />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:padding="5dp"
+        android:layout_height="80dp"
+        android:padding="7dp"
         android:background="@color/littleWhite"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textColor="@color/black_text"
         android:id="@+id/editText_trans" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 </LinearLayout>
