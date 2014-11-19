@@ -35,8 +35,8 @@ public class Center {
     private EventBus eventBus = EventBus.getDefault();
     private Context context;
     //TODO need remove
-    private String ID = "relaxgo";
-    private String passWord = "126bhgn333";
+    private String ID = "";
+    private String passWord = "";
 
     public static Center getInstance() {
         return ourInstance;

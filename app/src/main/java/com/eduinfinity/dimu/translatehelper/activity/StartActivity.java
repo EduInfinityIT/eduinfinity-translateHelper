@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eduinfinity.dimu.translatehelper.R;
@@ -33,6 +34,7 @@ public class StartActivity extends Activity {
     private static final String VERSION_KEY = "VERSION_KEY";
     private static final String TAG = StartActivity.class.getName();
     private TextView tv;
+    private ImageView imageView_motto;
     private Center center = Center.getInstance();
 
     @Override
@@ -40,12 +42,15 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start);
-        tv = (TextView) findViewById(R.id.textView_motto);
-        //从assert中获取有资源，获得app的assert，采用getAserts()，通过给出在assert/下面的相对路径。在实际使用中，字体库可能存在于SD卡上，可以采用createFromFile()来替代createFromAsset。
-        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/wawasc.otf");
-        tv.setTypeface(face);
+//        tv = (TextView) findViewById(R.id.textView_motto);
+//        //从assert中获取有资源，获得app的assert，采用getAserts()，通过给出在assert/下面的相对路径。在实际使用中，字体库可能存在于SD卡上，可以采用createFromFile()来替代createFromAsset。
+//        Typeface face = Typeface.createFromAsset(getAssets(), "fonts/wawasc.otf");
+//        tv.setTypeface(face);
+        imageView_motto = (ImageView) findViewById(R.id.imageView_motto);
+        int[] mottos = {R.drawable.motto1, R.drawable.motto2, R.drawable.motto3};
         int i = (int) Math.floor(Math.random() * mottoes.length);
-        tv.setText(mottoes[i]);
+        imageView_motto.setImageResource(mottos[i]);
+//        tv.setText(mottoes[i]);
     }
 
     Runnable r = new Runnable() {
