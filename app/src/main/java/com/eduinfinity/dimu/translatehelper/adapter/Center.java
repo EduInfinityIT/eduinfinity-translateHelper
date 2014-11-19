@@ -34,9 +34,9 @@ public class Center {
     private Project currentProject;
     private EventBus eventBus = EventBus.getDefault();
     private Context context;
-    private String ID = "";
-    private String passWord = "";
-    private boolean hasPassWord = false;
+    //TODO need remove
+    private String ID = "relaxgo";
+    private String passWord = "126bhgn333";
 
     public static Center getInstance() {
         return ourInstance;
@@ -151,7 +151,6 @@ public class Center {
         this.ID = ID;
         this.passWord = passWord;
         triggerHandler(ID,passWord,true);
-        hasPassWord = true;
     }
 
     public String getID() {

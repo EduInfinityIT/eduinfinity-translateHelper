@@ -98,7 +98,7 @@ public class ProjectActivity extends Activity {
         txRestClientUsage.getProjectDetails(slug);
         Log.i(TAG, slug);
         editText_courseName.setText("");
-        SuperActivityToast.create(ProjectActivity.this, "明白，开始搜索" + slug, SuperToast.Duration.LONG).show();
+        SuperActivityToast.create(ProjectActivity.this, "开始搜索" + slug, SuperToast.Duration.LONG).show();
     }
 
     //-----------------------------------------------------------------------

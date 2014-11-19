@@ -44,7 +44,7 @@ public class FileUtils {
         try {
             FileInputStream fis = getInputStream(path, fileName);
             if (fis == null) return textTrackImpl;
-            textTrackImpl = SrtParse.parse(fis, textTrackImpl);
+            textTrackImpl = SrtParse.parseSource(fis, textTrackImpl);
             fis.close();
             Log.i(TAG, "read " + fileName + " success" + allString);
         } catch (IOException e) {
@@ -129,7 +129,7 @@ public class FileUtils {
         file.getParentFile().mkdirs();
         try {
             fos = new FileOutputStream(file);
-            fos.write(allString.getBytes());
+            fos.write(allString.getBytes("UTF-8"));
             fos.close();
             Log.i(TAG, "write ok " + file.getPath());
             return true;
