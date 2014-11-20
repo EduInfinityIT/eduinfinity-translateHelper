@@ -87,6 +87,8 @@ public class StartActivity extends Activity {
         AsyncHttpClient.blockRetryExceptionClass(ConnectionPoolTimeoutException.class);
 
         new Handler().postDelayed(r, 2000);// 2秒后关闭，并跳转到主页面
+
+        center.setIsFirstLoad(firstLoad());
     }
 
     public boolean firstLoad() {
@@ -113,12 +115,12 @@ public class StartActivity extends Activity {
         }
     }
 
-    public boolean getPassWord() {
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String id = prefs.getString(Config.ID, "");
-        String password = prefs.getString(Config.PASSWORD, "");
-        center.setIDAndPassWord(id, password);
-        return true;
-    }
+//    public boolean getPassWord() {
+//
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        String id = prefs.getString(Config.ID, "");
+//        String password = prefs.getString(Config.PASSWORD, "");
+//        center.setIDAndPassWord(id, password);
+//        return true;
+//    }
 }
