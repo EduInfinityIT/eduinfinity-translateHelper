@@ -20,10 +20,7 @@ import java.io.InputStream;
  * Created by Dimu on 10/20/14.
  */
 public class FileUtils {
-
     private static final String TAG = "FileUtils";
-
-
     public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
         String allString = "";
         try {

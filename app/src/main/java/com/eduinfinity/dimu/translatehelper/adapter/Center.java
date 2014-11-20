@@ -37,6 +37,7 @@ public class Center {
     //TODO need remove
     private String ID = "";
     private String passWord = "";
+    private boolean isFirstLoad;
 
     public static Center getInstance() {
         return ourInstance;
@@ -150,7 +151,7 @@ public class Center {
     public void setIDAndPassWord(String ID, String passWord) {
         this.ID = ID;
         this.passWord = passWord;
-        triggerHandler(ID,passWord,true);
+        triggerHandler(ID, passWord, true);
     }
 
     public String getID() {
@@ -175,4 +176,11 @@ public class Center {
         else userHandler.getUserFailed(id, pw);
     }
 
+    public void setIsFirstLoad(boolean isFirstLoad) {
+        this.isFirstLoad = isFirstLoad;
+    }
+
+    public boolean isFirstLoad() {
+        return isFirstLoad;
+    }
 }

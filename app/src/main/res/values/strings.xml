@@ -27,5 +27,11 @@
     <string name="complete">完成</string>
     <string name="cancel">取消</string>
     <string name="parseSRTError">解析字幕失败</string>
+    <string name="title_activity_how_to">使用向导</string>
+    <string name="start">开始使用</string>
+    <string name="guide2_selet_project">选择相应工程，进入它的课程表</string>
+    <string name="guide2_input">输入课程的slug，可以在T站的网址中得知，如https://www.transifex.com/projects/p/coursera-ml/language/zh/中的coursera-ml</string>
+    <string name="guide1_color">不同颜色代表不同状态，红色时代表未下载字幕</string>
+    <string name="guide1_swipe">左滑出现菜单，选择相应操作</string>
 
 </resources>

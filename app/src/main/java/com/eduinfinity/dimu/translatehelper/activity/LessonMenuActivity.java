@@ -182,6 +182,11 @@ public class LessonMenuActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (center.isFirstLoad()) {
+            Intent intent = new Intent(this, HowToActivity.class);
+            startActivity(intent);
+            center.setIsFirstLoad(false);
+        }
     }
 
     @Override

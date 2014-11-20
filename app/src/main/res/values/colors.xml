@@ -5,5 +5,10 @@
     <color name="littleWhite">#ddd</color>
     <color name="littleGray">#606060</color>
     <color name="black_text">#585757</color>
+    <color name="green">#ff3ea41d</color>
+    <color name="text_background">#eadedcce</color>
+    <color name="background">#ff303030</color>
+    <color name="background_deep">#202020</color>
+    <color name="light_bg_border">#44f656</color>
 
 </resources>
