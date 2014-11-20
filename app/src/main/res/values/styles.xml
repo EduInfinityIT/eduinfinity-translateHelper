@@ -3,6 +3,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="AppThemeNoTitle" parent="android:Theme.Holo.Light.DarkActionBar">
 
         <!-- Customize your theme here. -->
         <item name="android:windowNoTitle">true</item>
@@ -14,7 +18,7 @@
         <item name="metaButtonBarStyle">@style/ButtonBar</item>
         <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
         <item name="android:windowNoTitle">true</item>
-     </style>
+    </style>
 
     <style name="ButtonBar">
         <item name="android:paddingLeft">2dp</item>

@@ -3,22 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.eduinfinity.dimu.translatehelper.activity.ClassMenuActivity">
+    tools:context="com.eduinfinity.dimu.translatehelper.activity.LessonMenuActivity">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <ListView
+    <!--<ListView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:id="@+id/listView_class_menu" />-->
+    <com.baoyz.swipemenulistview.SwipeMenuListView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/listView_class_menu"/>
+        android:id="@+id/listView_class_menu" />
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginBottom="0dp"
-        android:text="@string/course_menu"
-        android:id="@+id/button_course_menu"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/gray"
+            android:textColor="@color/littleWhite"
+            android:gravity="center"
+            android:text="@string/course_menu"
+            android:textSize="18sp"
+            android:typeface="monospace"
+            android:id="@+id/textView_course_menu" />
+    </LinearLayout>
 </LinearLayout>
