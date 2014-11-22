@@ -21,6 +21,9 @@ import java.io.InputStream;
  */
 public class FileUtils {
     private static final String TAG = "FileUtils";
+    public  static String getFileRootPath(){
+        return  Environment.getExternalStorageDirectory().toString() + Config.rootFolderName ;
+    }
     public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
         String allString = "";
         try {
@@ -122,7 +125,7 @@ public class FileUtils {
         FileOutputStream fos = null;
         if (allString == null) return false;
 //        File file = getFile(fileName, activity);
-        File file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, fileName);
+        File file = new File(getFileRootPath()+ path, fileName);
         file.getParentFile().mkdirs();
         try {
             fos = new FileOutputStream(file);
@@ -228,7 +231,7 @@ public class FileUtils {
 
         Bitmap bitmap = null;
         try {
-            String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
+            String filePath = getFileRootPath()+ "/" + fileName + ".png";
             File file = new File(filePath);
             if (file.exists()) {
                 bitmap = BitmapFactory.decodeFile(filePath);
@@ -242,7 +245,7 @@ public class FileUtils {
     }
 
     public static void delBitmap(String fileName) {
-        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
+        String filePath = getFileRootPath()+ "/" + fileName + ".png";
         File file = new File(filePath);
         if (file.exists()) {
             file.delete();
@@ -250,7 +253,7 @@ public class FileUtils {
     }
 
     public static void delResource(String pro, String res) {
-        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + pro;
+        String filePath = getFileRootPath()+ "/" + pro;
         File file1 = new File(filePath + Config.SourceFolder, res + "srt");
         File file2 = new File(filePath + Config.TransFolder, res + "srt");
         if (file1.exists()) {

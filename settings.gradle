@@ -1,2 +1,4 @@
 include ':app'
+include ':vitamio'
 include ':swipeMenuListView'
+project(':vitamio').projectDir = new File('/Users/Dimu/work/eduinfinity/VitamioBundle/vitamio')
