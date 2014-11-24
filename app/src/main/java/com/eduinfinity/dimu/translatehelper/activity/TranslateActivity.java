@@ -9,11 +9,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Surface;
-import android.view.TextureView;
-import android.view.View;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import com.eduinfinity.dimu.translatehelper.R;
 import com.eduinfinity.dimu.translatehelper.adapter.Center;
 import com.eduinfinity.dimu.translatehelper.adapter.SrtPageAdapter;
@@ -31,6 +29,8 @@ import io.vov.vitamio.MediaPlayer.OnPreparedListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TranslateActivity extends FragmentActivity implements OnBufferingUpdateListener,
         OnCompletionListener, OnPreparedListener, TextureView.SurfaceTextureListener {
@@ -57,71 +57,166 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
     private int mVideoHeight;
     private MediaPlayer mMediaPlayer;
     private TextureView mTextureView;
+    private TextView videoInfo;
+    private SeekBar seekBar;
     private String path;
     private boolean mIsVideoSizeKnown = false;
     private boolean mIsVideoReadyToBePlayed = false;
+    private boolean isDragSrtItem = false;
+
+    private static final int STATE_ERROR = -1;
+    private static final int STATE_IDLE = 0;
+    private static final int STATE_PREPARING = 1;
+    private static final int STATE_PREPARED = 2;
+    private static final int STATE_PLAYING = 3;
+    private static final int STATE_PAUSED = 4;
+    private static final int STATE_PLAYBACK_COMPLETED = 5;
+    private static final int STATE_SUSPEND = 6;
+    private static final int STATE_RESUME = 7;
+    private static final int STATE_SUSPEND_UNSUPPORTED = 8;
+    private static int mCurrentState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        translateBus.register(this);
         setContentView(R.layout.activity_translate);
-        mViewPager = (ViewPager) findViewById(R.id.subtitle_list_pager);
+        translateBus.register(this);
+
         Intent intent = getIntent();
         resourceSlug = intent.getStringExtra(ResourceSlug);
         projectSlug = intent.getStringExtra(ProjectSlug);
         name = intent.getStringExtra(ResourceName);
         status = intent.getIntExtra(STATUS, 0);
+
         setTitle(name);
         loadSrt();
-        srtAdapter = new SrtPageAdapter(getSupportFragmentManager(), lineList);
-        mViewPager.setAdapter(srtAdapter);
+
         if (!LibsChecker.checkVitamioLibs(this)) isVideoPlayerOK = false;
-        mTextureView = (TextureView) findViewById(R.id.surface);
-        mTextureView.setSurfaceTextureListener(this);
-//        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-//        circlePageIndicator.setViewPager(mViewPager);
-//        srtAdapter = new SrtViewPageAdapter(viewList);
-//        mViewPager.setAdapter(srtAdapter);
-
-//        switch (status) {
-//            case Model.INIT:
-//                TXRestClientUsage.getResourceContent(projectSlug, resourceSlug);
-//                TXRestClientUsage.getTranslateContent(projectSlug, resourceSlug);
-//                break;
-////            case Model.RES_DOWNED:
-////                TXRestClientUsage.getTranslateContent(projectSlug, resourceSlug);
-////                break;
-//            default:
-//
-//                break;
-//        }
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                if(mIsVideoReadyToBePlayed){
-                    mMediaPlayer.seekTo(lineList.get(i).startTime);
-                    mMediaPlayer.getDuration();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
+        initViewAndSetListener();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        loadSrt();
+        startVideo();
+        startTimedText();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i("Activity", "Activity on pause");
+        super.onPause();
+        translateBus.post(new SaveEvent());
+        pauseVideo();
+        stopTimedText();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releaseMediaPlayer();
+        doCleanUp();
+    }
+
+    private void initViewAndSetListener() {
+        mViewPager = (ViewPager) findViewById(R.id.subtitle_list_pager);
+        srtAdapter = new SrtPageAdapter(getSupportFragmentManager(), lineList);
+        mViewPager.setAdapter(srtAdapter);
+//        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+//        circlePageIndicator.setViewPager(mViewPager);
+        mViewPager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int i) {
+                        long time = lineList.get(i).startTime;
+                        if (!isDragSrtItem) return;
+                        seekBar.setProgress((int) time);
+                        if (mIsVideoReadyToBePlayed) {
+                            mMediaPlayer.seekTo(time);
+                        }
+                        isDragSrtItem = false;
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int i) {
+                        if (i == ViewPager.SCROLL_STATE_DRAGGING) isDragSrtItem = true;
+                    }
+                }
+
+        );
+
+        videoInfo = (TextView) findViewById(R.id.videoInfo);
+
+        mTextureView = (TextureView) findViewById(R.id.surface);
+        mTextureView.setSurfaceTextureListener(this);
+        mTextureView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mIsVideoReadyToBePlayed) return;
+                if (mMediaPlayer.isPlaying()) {
+                    pauseVideo();
+                } else {
+                    startVideo();
+                }
+            }
+        });
+
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setMax((int) lineList.get(lineList.size() - 1).endTime);
+        seekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        mViewPager.setCurrentItem(getSrtIndex(seekBar.getProgress()), false);
+                        if (mIsVideoReadyToBePlayed && mMediaPlayer.isPlaying())
+                            mMediaPlayer.seekTo(seekBar.getProgress());
+                    }
+                }
+        );
+    }
+
+    private void pauseVideo() {
+        if (!mIsVideoReadyToBePlayed) return;
+        if (mMediaPlayer.isPlaying()) {
+            TranslateActivity.this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
+            mMediaPlayer.stop();
+            mMediaPlayer.getTimedTextTrack();
+            mMediaPlayer.deselectTrack(1);
+            mMediaPlayer.selectTrack(1);
+        }
+    }
+
+    private void startVideo() {
+        if (!mIsVideoReadyToBePlayed) return;
+        if (!mMediaPlayer.isPlaying()) {
+            TranslateActivity.this.findViewById(R.id.stop).setVisibility(View.INVISIBLE);
+            int index = mViewPager.getCurrentItem();
+            long time = lineList.get(index).startTime;
+            mMediaPlayer.start();
+            mMediaPlayer.seekTo(time);
+        }
+    }
+
+    private int getSrtIndex(long location) {
+        int indexMaybe = (int) (location / 3000);
+        if (indexMaybe > lineList.size() - 1) indexMaybe = lineList.size() - 1;
+        TextTrackImpl.Line line = lineList.get(indexMaybe);
+        do {
+            if (location < line.startTime) indexMaybe--;
+            if (location > line.endTime) indexMaybe++;
+            if (indexMaybe < 0) return 0;
+            if (indexMaybe > lineList.size() - 1) return lineList.size() - 1;
+            line = lineList.get(indexMaybe);
+        } while (location < line.startTime || location > line.endTime);
+        return indexMaybe;
     }
 
     private void loadSrt() {
@@ -133,44 +228,21 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
         if (FileUtils.isExist("/" + projectSlug + Config.TransFolder, resourceSlug + ".srt")) {
             FileUtils.readTrans2track("/" + projectSlug + Config.TransFolder, resourceSlug + ".srt", tack, this);
         }
-
-
         lineList = tack.getSubs();
     }
 
 
-    @Override
-    protected void onPause() {
-        Log.i("Activity", "Activity on pause");
-        super.onPause();
-        translateBus.post(new SaveEvent());
-        releaseMediaPlayer();
-        doCleanUp();
-    }
-
-    public void onEventAsync(SaveEvent event) {
-        if (lineList != null) {
-            String allString = SrtParse.convertSrt2String(lineList);
-            FileUtils.writeFileOUTStorage("/" + projectSlug + Config.TransFolder, resourceSlug + ".srt", allString, this);
-            Center.getInstance().getCurrentProject().getResource(resourceSlug).setStatus(Model.CHANGED);
-        }
-    }
-
-    class SaveEvent {
-
-    }
-
     private void playVideo(SurfaceTexture surfaceTexture) {
         doCleanUp();
         path = "";
-//        path=
         try {
             if (FileUtils.isExist("/" + projectSlug + Config.VideosFolder, resourceSlug + ".mp4")) {
-                path = FileUtils.getFileRootPath() +"/"+ projectSlug + Config.VideosFolder +"/"+ resourceSlug + ".mp4";
+                path = FileUtils.getFileRootPath() + "/" + projectSlug + Config.VideosFolder + "/" + resourceSlug + ".mp4";
             }
             if (path == "") {
                 // Tell the user to provide a media file URL.
-                Toast.makeText(TranslateActivity.this, "not find video", Toast.LENGTH_LONG).show();
+                videoInfo.setText(R.string.no_video);
+                videoInfo.setVisibility(View.VISIBLE);
                 return;
             }
             // Create a new media player and set the listeners
@@ -181,6 +253,7 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
             mMediaPlayer.setOnBufferingUpdateListener(this);
             mMediaPlayer.setOnCompletionListener(this);
             mMediaPlayer.setOnPreparedListener(this);
+//            mMediaPlayer.setOnTimedTextListener(this);
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         } catch (Exception e) {
@@ -190,7 +263,6 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
 
     public void onBufferingUpdate(MediaPlayer arg0, int percent) {
         // Log.d(TAG, "onBufferingUpdate percent:" + percent);
-
     }
 
     public void onCompletion(MediaPlayer arg0) {
@@ -200,6 +272,9 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
     public void onPrepared(MediaPlayer mediaplayer) {
         Log.d(TAG, "onPrepared called");
         mIsVideoReadyToBePlayed = true;
+        String srtPath = FileUtils.getFileRootPath() + "/" + projectSlug + Config.SourceFolder + "/" + resourceSlug + ".srt";
+        mMediaPlayer.addTimedTextSource(srtPath);
+        mMediaPlayer.setTimedTextShown(true);
         if (mIsVideoReadyToBePlayed) {
             startVideoPlayback();
         }
@@ -223,6 +298,10 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
         Log.v(TAG, "startVideoPlayback");
         adjustAspectRatio(mMediaPlayer.getVideoWidth(), mMediaPlayer.getVideoHeight());
         mMediaPlayer.start();
+    }
+
+    protected boolean isInPlaybackState() {
+        return (mMediaPlayer != null && mCurrentState != STATE_ERROR && mCurrentState != STATE_IDLE && mCurrentState != STATE_PREPARING);
     }
 
     /**
@@ -263,7 +342,6 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
     }
 
     @Override
@@ -273,7 +351,64 @@ public class TranslateActivity extends FragmentActivity implements OnBufferingUp
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
     }
 
+    private Timer textTimer = new Timer();
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            if (mIsVideoReadyToBePlayed && mMediaPlayer.isPlaying()) {
+                int current = mViewPager.getCurrentItem();
+                int dec = getSrtIndex(mMediaPlayer.getCurrentPosition() + 200);
+                if (dec != current) translateBus.post(new TextChange(dec));
+            }
+        }
+    };
+
+    private void startTimedText() {
+        textTimer.schedule(timerTask, 0, 500);
+    }
+
+    private void stopTimedText() {
+        textTimer.purge();
+        textTimer.cancel();
+    }
+
+    private class TextChange {
+        public final int index;
+
+        TextChange(int index) {
+            this.index = index;
+        }
+    }
+
+    public void onEventMainThread(TextChange event) {
+        long time = lineList.get(event.index).startTime;
+        mViewPager.setCurrentItem(event.index, false);
+        seekBar.setProgress((int) time);
+    }
+//    @Override
+//    public void onTimedText(String text) {
+//        Log.w(seek, "srt");
+//        long time = mMediaPlayer.getCurrentPosition();
+//        int index = getSrtIndex(time);
+//        Log.w(seek, "timedText " + index);
+//        mViewPager.setCurrentItem(getSrtIndex(time), false);
+//        seekBar.setProgress((int) time);
+//    }
+//
+//    @Override
+//    public void onTimedTextUpdate(byte[] pixels, int width, int height) {
+//    }
+
+    public void onEventAsync(SaveEvent event) {
+        if (lineList != null) {
+            String allString = SrtParse.convertSrt2String(lineList);
+            FileUtils.writeFileOUTStorage("/" + projectSlug + Config.TransFolder, resourceSlug + ".srt", allString, this);
+            Center.getInstance().getCurrentProject().getResource(resourceSlug).setStatus(Model.CHANGED);
+        }
+    }
+
+    class SaveEvent {
+    }
 }

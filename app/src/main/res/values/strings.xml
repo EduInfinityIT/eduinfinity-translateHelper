@@ -33,5 +33,6 @@
     <string name="guide2_input">输入课程的slug，可以在T站的网址中得知，如https://www.transifex.com/projects/p/coursera-ml/language/zh/中的coursera-ml</string>
     <string name="guide1_color">不同颜色代表不同状态，红色时代表未下载字幕</string>
     <string name="guide1_swipe">左滑出现菜单，选择相应操作</string>
+    <string name="no_video">未发现视频</string>
 
 </resources>
