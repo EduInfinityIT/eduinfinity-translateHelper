@@ -1,14 +1,11 @@
 package com.eduinfinity.dimu.translatehelper.utils;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Project;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +18,7 @@ public class JsonUtils {
 //    private static final String COURSE = "course.config";
 
 
-    public static synchronized boolean writeJson(String path, String name, List<Model> modelList,Context context) {
+    public static synchronized boolean writeJson(String path, String name, List<Model> modelList, Context context) {
         String allString = "";
         try {
             JSONArray courseArray = new JSONArray();
@@ -43,7 +40,7 @@ public class JsonUtils {
             Log.i(TAG, "create  " + name + " err " + e);
             return false;
         }
-        return FileUtils.writeFileOUTStorage(path, name, allString, context);
+        return FileUtils.writeFileOUTStorage(path, name, allString);
     }
 
     public static List<Model> parseProjectList(String path, String fileName, List<Model> projects) {

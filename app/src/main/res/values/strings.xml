@@ -21,7 +21,7 @@
     <string name="resquestResourceFailure">请求资源失败</string>
     <string name="resposeNotdone">返回结果未处理</string>
     <string name="title_activity_project">课程菜单</string>
-    <string name="title_activity_set_txid">SetTXIDActivity</string>
+    <string name="title_activity_set_txid">设置T站账号</string>
     <string name="tx_id">T站账号</string>
     <string name="tx_password">T站密码</string>
     <string name="complete">完成</string>
@@ -30,12 +30,19 @@
     <string name="title_activity_how_to">使用向导</string>
     <string name="start">开始使用</string>
     <string name="guide2_selet_project">选择相应工程，进入它的课程表</string>
-    <string name="guide2_input">输入课程的slug，可以在T站的网址中得知，如https://www.transifex.com/projects/p/coursera-ml/language/zh/中的coursera-ml</string>
-    <string name="guide1_color">不同颜色代表不同状态，红色时代表未下载字幕</string>
+    <string name="guide2_input">
+        输入课程的slug，可以在T站的网址中得知，如https://www.transifex.com/projects/p/coursera-ml/language/zh/中的coursera-ml
+    </string>
+    <string name="guide1_menu">点击出现更多选择</string>
     <string name="guide1_swipe">左滑出现菜单，选择相应操作</string>
     <string name="no_video">未发现视频</string>
     <string name="help">使用向导</string>
     <string name="select_file">选择视频文件</string>
     <string name="setID">设置账号</string>
+    <string name="title_activity_video_select">选择视频</string>
+    <string name="errorID">账号密码错误</string>
+    <string name="guide1_buttom">点击添加或选择课程</string>
+    <string name="guide3_select">点击选择视频</string>
+    <string name="errorVideoLib">视频库初始化失败</string>
 
 </resources>

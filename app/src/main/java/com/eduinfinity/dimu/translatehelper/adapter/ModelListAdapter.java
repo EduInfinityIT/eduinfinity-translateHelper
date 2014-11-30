@@ -1,31 +1,23 @@
 package com.eduinfinity.dimu.translatehelper.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.eduinfinity.dimu.translatehelper.R;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 
 import java.util.List;
 
-/**
- * Created by Dimu on 10/22/14.
- */
 public class ModelListAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     private List<Model> mList;
-    private Context mContext;
 
     public ModelListAdapter(Context context, List<Model> list) {
         mList = list;
-        mContext = context;
         mInflater = LayoutInflater.from(context);
         mList = list;
     }
@@ -73,10 +65,10 @@ public class ModelListAdapter extends BaseAdapter {
     }
 
     public void up2first(int position) {
-        Model model = mList.get(position);
-        mList.remove(position);
-        mList.add(0, model);
-        notifyDataSetChanged();
+//        Model model = mList.get(position);
+//        mList.remove(position);
+//        mList.add(0, model);
+//        notifyDataSetChanged();
     }
 
     static class ViewHolder {

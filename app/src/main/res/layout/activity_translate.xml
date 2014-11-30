@@ -9,20 +9,15 @@
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="@drawable/rect">
-        <TextView
-                android:id="@+id/videoInfo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="视频位置，待做"
-                android:textColor="@color/littleWhite"
-                android:gravity="center"
-                android:visibility="gone"/>
+            android:background="@drawable/rect"
+            android:id="@+id/video_layout">
 
         <io.vov.vitamio.widget.VideoView
                 android:id="@+id/surface_view"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
         <FrameLayout
                 android:id="@+id/stop"
                 android:layout_width="match_parent"
@@ -42,21 +37,21 @@
 
     </FrameLayout>
 
-        <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                android:id="@+id/seekbar"
-                android:layout_gravity="center_horizontal"
-                android:progressDrawable="@drawable/progress_line"
-                android:indeterminateDrawable="@drawable/progress_line"
-                android:maxHeight="12dp"
-                android:minHeight="12dp"
-                android:thumb="@drawable/seek_bar_handle"
-                android:thumbOffset="11px"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"/>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/seekbar"
+            android:layout_gravity="center_horizontal"
+            android:progressDrawable="@drawable/progress_line"
+            android:indeterminateDrawable="@drawable/progress_line"
+            android:maxHeight="12dp"
+            android:minHeight="12dp"
+            android:thumb="@drawable/seek_bar_handle"
+            android:thumbOffset="5px"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"/>
 
     <!--<style name="MediaController_SeekBar" parent="android:Widget.SeekBar">-->
     <!--<item name="android:progressDrawable">@drawable/scrubber_progress_horizontal_holo_dark</item>-->
