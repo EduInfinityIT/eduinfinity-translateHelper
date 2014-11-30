@@ -7,19 +7,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuAdapter;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.baoyz.swipemenulistview.*;
 import com.eduinfinity.dimu.translatehelper.R;
 import com.eduinfinity.dimu.translatehelper.adapter.Center;
 import com.eduinfinity.dimu.translatehelper.adapter.ModelListAdapter;
@@ -32,12 +28,11 @@ import com.eduinfinity.dimu.translatehelper.utils.Config;
 import com.eduinfinity.dimu.translatehelper.utils.FileScan;
 import com.eduinfinity.dimu.translatehelper.utils.FileUtils;
 import com.eduinfinity.dimu.translatehelper.utils.JsonUtils;
+import de.greenrobot.event.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 public class LessonMenuActivity extends Activity {
 
@@ -47,14 +42,10 @@ public class LessonMenuActivity extends Activity {
     private Center center = Center.getInstance();
     private List<Model> resourceList;
     private TextView textView_course_menu;
-    private EditText editText_courseName;
     private EventBus eventBus = EventBus.getDefault();
-    private TXRestClientUsage txRestClientUsage = new TXRestClientUsage();
     private SwipeMenuListView listView;
     private ModelListAdapter adapter;
 
-    private static String name;
-    private static String passWord;
     private Project CurrentProject;
 
     @Override
@@ -65,6 +56,40 @@ public class LessonMenuActivity extends Activity {
         center.setClassActivity(this);
         init();
         eventBus.register(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.class_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        Intent intent;
+        switch (id) {
+            case R.id.help:
+                intent = new Intent(this, HowToActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.setID:
+                intent = new Intent(this, SetTXIDActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.about:
+                Toast.makeText(this, "这是无边界字幕组翻译专用APP", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
@@ -86,11 +111,16 @@ public class LessonMenuActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ModelListAdapter adapter = (ModelListAdapter) ((SwipeMenuAdapter) parent.getAdapter()).getWrappedAdapter();
                 Resource model = (Resource) adapter.getItem(position);
-                if (model.getStatus() < Model.RES_DOWNED) return;
+                if (model.getStatus() < Model.RES_DOWNED) {
+                    TXRestClientUsage.getResourceContent(model.getProjectSlug(), model.getValue(Model.SLUG));
+                    return;
+                }
                 Intent intent = new Intent(LessonMenuActivity.this, TranslateActivity.class);
                 intent.putExtra(TranslateActivity.ResourceName, model.getValue(Model.NAME));
                 intent.putExtra(TranslateActivity.ResourceSlug, model.getValue(Model.SLUG));
                 intent.putExtra(TranslateActivity.ProjectSlug, model.getProjectSlug());
+                String path = model.getValue(Resource.VIDEO);
+                if (path != null) intent.putExtra(TranslateActivity.VIDEO_PATH, path);
                 intent.putExtra(TranslateActivity.STATUS, model.getStatus());
                 startActivity(intent);
 //                adapter.up2first(position);

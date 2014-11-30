@@ -7,21 +7,19 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.eduinfinity.dimu.translatehelper.R;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-/**
- * Created by Dimu on 10/20/14.
- */
 public class FileUtils {
     private static final String TAG = "FileUtils";
-    public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
+
+    public static String getFileRootPath() {
+        return Environment.getExternalStorageDirectory().toString() + Config.rootFolderName;
+    }
+
+    public static TextTrackImpl readTrans2track(String path, String fileName, TextTrackImpl textTrackImpl) {
         String allString = "";
         try {
             FileInputStream fis = getInputStream(path, fileName);
@@ -36,7 +34,7 @@ public class FileUtils {
         return textTrackImpl;
     }
 
-    public static TextTrackImpl readRes2track(String path, String fileName, TextTrackImpl textTrackImpl, Activity activity) {
+    public static TextTrackImpl readRes2track(String path, String fileName, TextTrackImpl textTrackImpl) {
         String allString = "";
         try {
             FileInputStream fis = getInputStream(path, fileName);
@@ -68,7 +66,7 @@ public class FileUtils {
 
 
     public static File getFile(String path, String fileName) {
-        File file = null;
+        File file;
         File newdir = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path);
         if (!newdir.exists()) {
             Log.e(TAG, "Directory not created");
@@ -96,7 +94,7 @@ public class FileUtils {
         return newDir;
     }
 
-    public static boolean writeFileInStorage(String fileName, String allString,Context context) {
+    public static boolean writeFileInStorage(String fileName, String allString, Context context) {
         Log.i(TAG, "save  " + fileName + "  " + allString);
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -115,14 +113,14 @@ public class FileUtils {
     }
 
 
-    public static boolean writeFileOUTStorage(String path, String fileName, String allString, Context context) {
+    public static boolean writeFileOUTStorage(String path, String fileName, String allString) {
         boolean isOK = existSDcard() && isExternalStorageWritable();
         if (!isOK) return false;
         Log.i(TAG, "isOK");
         FileOutputStream fos = null;
         if (allString == null) return false;
 //        File file = getFile(fileName, activity);
-        File file = new File(Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + path, fileName);
+        File file = new File(getFileRootPath() + path, fileName);
         file.getParentFile().mkdirs();
         try {
             fos = new FileOutputStream(file);
@@ -168,7 +166,7 @@ public class FileUtils {
         return allString;
     }
 
-    public static boolean saveBitmap(String path, String fileName, Bitmap bitmap,Context context) {
+    public static boolean saveBitmap(String path, String fileName, Bitmap bitmap) {
         boolean isOK = existSDcard() && isExternalStorageWritable();
         if (!isOK) return false;
         Log.i(TAG, "isOK");
@@ -199,36 +197,26 @@ public class FileUtils {
     }
 
     public static boolean existSDcard() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            return true;
-        } else
-            return false;
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     public static Bitmap readBitmap(String fileName) {
 
         Bitmap bitmap = null;
         try {
-            String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
+            String filePath = getFileRootPath() + "/" + fileName + ".png";
             File file = new File(filePath);
             if (file.exists()) {
                 bitmap = BitmapFactory.decodeFile(filePath);
@@ -242,7 +230,7 @@ public class FileUtils {
     }
 
     public static void delBitmap(String fileName) {
-        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + fileName + ".png";
+        String filePath = getFileRootPath() + "/" + fileName + ".png";
         File file = new File(filePath);
         if (file.exists()) {
             file.delete();
@@ -250,7 +238,7 @@ public class FileUtils {
     }
 
     public static void delResource(String pro, String res) {
-        String filePath = Environment.getExternalStorageDirectory().toString() + Config.rootFolderName + "/" + pro;
+        String filePath = getFileRootPath() + "/" + pro;
         File file1 = new File(filePath + Config.SourceFolder, res + "srt");
         File file2 = new File(filePath + Config.TransFolder, res + "srt");
         if (file1.exists()) {
@@ -260,5 +248,12 @@ public class FileUtils {
             file2.delete();
         }
 
+    }
+
+    public static String size2String(Long size) {
+        final int gb = 1073741824;
+        final int mb = 1048576;
+        final int kb = 1024;
+        return "" + size / mb + "MB";
     }
 }

@@ -1,32 +1,82 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".TranslateActivity"  >
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".TranslateActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="视频位置，待做"
-        android:textColor="@color/littleWhite"
-        android:background="@color/black"
-        android:gravity="center"/>
 
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/rect"
+            android:id="@+id/video_layout">
+
+        <io.vov.vitamio.widget.VideoView
+                android:id="@+id/surface_view"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        <FrameLayout
+                android:id="@+id/stop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bitGray"
+                android:visibility="gone">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Stop"
+                    android:textSize="30dp"
+                    android:textColor="@color/littleWhite"
+                    android:background="@drawable/stop"/>
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/seekbar"
+            android:layout_gravity="center_horizontal"
+            android:progressDrawable="@drawable/progress_line"
+            android:indeterminateDrawable="@drawable/progress_line"
+            android:maxHeight="12dp"
+            android:minHeight="12dp"
+            android:thumb="@drawable/seek_bar_handle"
+            android:thumbOffset="5px"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"/>
+
+    <!--<style name="MediaController_SeekBar" parent="android:Widget.SeekBar">-->
+    <!--<item name="android:progressDrawable">@drawable/scrubber_progress_horizontal_holo_dark</item>-->
+    <!--<item name="android:indeterminateDrawable">@drawable/scrubber_progress_horizontal_holo_dark</item>-->
+    <!--<item name="android:minHeight">13dip</item>-->
+    <!--<item name="android:maxHeight">13dip</item>-->
+    <!--<item name="android:thumb">@drawable/scrubber_control_selector_holo</item>-->
+    <!--<item name="android:thumbOffset">16dip</item>-->
+    <!--<item name="android:paddingLeft">16dip</item>-->
+    <!--<item name="android:paddingRight">16dip</item>-->
+    <!--</style>-->
     <android.support.v4.view.ViewPager
-       android:id="@+id/subtitle_list_pager"
-       android:layout_width="wrap_content"
-       android:layout_height="200dp"
-      >
-   </android.support.v4.view.ViewPager>
+            android:id="@+id/subtitle_list_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+    </android.support.v4.view.ViewPager>
 
     <!--<com.viewpagerindicator.CirclePageIndicator xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/indicator"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:padding="10dip"-->
-        <!--/>-->
+    <!--android:id="@+id/indicator"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="10dip"-->
+    <!--/>-->
     <!--app:fillColor="@color/light_bg_border"-->
     <!--app:pageColor="@color/background_deep"-->
     <!--app:radius="3dp"-->

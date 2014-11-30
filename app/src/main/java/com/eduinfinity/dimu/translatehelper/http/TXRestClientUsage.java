@@ -2,26 +2,18 @@ package com.eduinfinity.dimu.translatehelper.http;
 
 import android.util.Log;
 import android.widget.Toast;
-
 import com.eduinfinity.dimu.translatehelper.R;
 import com.eduinfinity.dimu.translatehelper.adapter.Center;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Model;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Project;
 import com.eduinfinity.dimu.translatehelper.adapter.model.Resource;
 import com.loopj.android.http.JsonHttpResponseHandler;
-
+import de.greenrobot.event.EventBus;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-import de.greenrobot.event.EventBus;
-
-/**
- * Created by Dimu on 10/23/14.
- */
 public class TXRestClientUsage {
     public static final String TAG = "TXRestClientUsage";
     private static Center center = Center.getInstance();
@@ -83,7 +75,6 @@ public class TXRestClientUsage {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.i(TAG, headers.toString());
                 Log.i(TAG, "success res" + projectSlug + "  " + resourceSlug);
                 Project project = center.getProject(projectSlug);
                 Resource resource = project.getResource(resourceSlug);
@@ -111,7 +102,7 @@ public class TXRestClientUsage {
                 Log.i(TAG, "success  trans" + projectSlug + "  " + resourceSlug);
                 Project project = center.getProject(projectSlug);
                 Resource resource = project.getResource(resourceSlug);
-                String content = "";
+                String content;
                 try {
                     content = response.getString(Resource.CONTENT);
                     resource.putValue(Resource.TRANSLATE, content);
@@ -166,7 +157,11 @@ public class TXRestClientUsage {
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             Log.i(TAG, responseString);
-            Toast.makeText(Center.getInstance().getContext(), R.string.resquestResourceFailure, Toast.LENGTH_LONG).show();
+            if (responseString.equals("Authorization Required")) {
+                Toast.makeText(Center.getInstance().getContext(), R.string.errorID, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(Center.getInstance().getContext(), R.string.resquestResourceFailure, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

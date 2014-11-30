@@ -31,5 +31,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.2.1'
     compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
     compile project(':swipeMenuListView')
+    compile project(':vitamio')
+
 //    compile 'com.viewpagerindicator:library:2.4.1@aar'
 }

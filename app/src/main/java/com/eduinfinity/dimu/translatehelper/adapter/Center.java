@@ -92,12 +92,12 @@ public class Center {
 
     public void onEventAsync(Resource.Translate data) {
         Resource resource = data.resource;
-        FileUtils.writeFileOUTStorage(resource.getTransPath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.TRANSLATE), classActivity);
+        FileUtils.writeFileOUTStorage(resource.getTransPath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.TRANSLATE));
     }
 
     public void onEventAsync(Resource.Source data) {
         Resource resource = data.resource;
-        FileUtils.writeFileOUTStorage(resource.getSourcePath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.SOURCE), classActivity);
+        FileUtils.writeFileOUTStorage(resource.getSourcePath(), resource.getValue(Resource.SLUG) + ".srt", resource.getValue(Resource.SOURCE));
     }
 
     public void onEventMainThread(Resource resource) {
@@ -172,6 +172,7 @@ public class Center {
     private TXRestClient.UserHandler userHandler;
 
     public void triggerHandler(String id, String pw, boolean isSuccess) {
+        if(userHandler==null)return;
         if (isSuccess) userHandler.getUserSuccess(id, pw);
         else userHandler.getUserFailed(id, pw);
     }
