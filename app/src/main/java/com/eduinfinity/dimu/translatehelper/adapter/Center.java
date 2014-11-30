@@ -172,6 +172,7 @@ public class Center {
     private TXRestClient.UserHandler userHandler;
 
     public void triggerHandler(String id, String pw, boolean isSuccess) {
+        if(userHandler==null)return;
         if (isSuccess) userHandler.getUserSuccess(id, pw);
         else userHandler.getUserFailed(id, pw);
     }

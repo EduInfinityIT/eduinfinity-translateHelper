@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.Adapter;
@@ -67,6 +69,40 @@ public class LessonMenuActivity extends Activity {
         eventBus.register(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.class_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        Intent intent;
+        switch (id) {
+            case R.id.help:
+                intent = new Intent(this, HowToActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.setID:
+                intent = new Intent(this, SetTXIDActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.about:
+                Toast.makeText(this, "这是无边界字幕组翻译专用APP", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void init() {
         textView_course_menu = (TextView) findViewById(R.id.textView_course_menu);
         textView_course_menu.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +122,10 @@ public class LessonMenuActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ModelListAdapter adapter = (ModelListAdapter) ((SwipeMenuAdapter) parent.getAdapter()).getWrappedAdapter();
                 Resource model = (Resource) adapter.getItem(position);
-                if (model.getStatus() < Model.RES_DOWNED) return;
+                if (model.getStatus() < Model.RES_DOWNED) {
+
+                    return;
+                }
                 Intent intent = new Intent(LessonMenuActivity.this, TranslateActivity.class);
                 intent.putExtra(TranslateActivity.ResourceName, model.getValue(Model.NAME));
                 intent.putExtra(TranslateActivity.ResourceSlug, model.getValue(Model.SLUG));

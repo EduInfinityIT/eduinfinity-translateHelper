@@ -34,5 +34,8 @@
     <string name="guide1_color">不同颜色代表不同状态，红色时代表未下载字幕</string>
     <string name="guide1_swipe">左滑出现菜单，选择相应操作</string>
     <string name="no_video">未发现视频</string>
+    <string name="help">使用向导</string>
+    <string name="select_file">选择视频文件</string>
+    <string name="setID">设置账号</string>
 
 </resources>
