@@ -8,8 +8,8 @@ android {
         applicationId "com.eduinfinity.dimu.translatehelper"
         minSdkVersion 16
         targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "0.0.3"
     }
     buildTypes {
         release {
@@ -21,7 +21,7 @@ android {
 
 repositories {
 //    maven { url "http://dl.bintray.com/populov/maven" }
-    maven { url 'http://maven.oschina.net/content/groups/public/'}
+    maven { url 'http://maven.oschina.net/content/groups/public/' }
     mavenCentral()
 }
 dependencies {
@@ -31,5 +31,7 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.2.1'
     compile 'com.github.johnpersano:supertoasts:1.3.4@aar'
     compile project(':swipeMenuListView')
+    compile project(':vitamio')
+
 //    compile 'com.viewpagerindicator:library:2.4.1@aar'
 }

@@ -32,19 +32,13 @@ public class SrtParse {
 
     }
 
-    public static String convertTime2String(long t) {
-        int h = (int) (t / (60 * 60 * 1000));
-        int m = (int) ((t % (60 * 60 * 1000)) / (60 * 1000));
-        int s = (int) (t % (60 * 1000) / 1000);
-        int mm = (int) (t % 1000);
-        String result;
-        result = h < 10 ? "0" + h : "" + h;
-        result = m < 10 ? result + ":0" + m : result + ":" + m;
-        result = s < 10 ? result + ":0" + s : result + ":" + s;
-        if (mm < 10) result = result + "," + "00" + mm;
-        else if (mm < 100 && mm > 10) result = result + "," + "0" + mm;
-        else result = result + "," + mm;
-        return result;
+    public static String convertTime2String(long time) {
+        int mileSeconds = (int) (time % 1000);
+        int totalSeconds = (int) (time / 1000);
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+        return String.format("%02d:%02d:%02d,%03d", hours, minutes, seconds, mileSeconds);
     }
 
     public static String convertSrt2String(List<TextTrackImpl.Line> list) {

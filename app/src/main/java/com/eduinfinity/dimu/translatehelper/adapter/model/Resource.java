@@ -2,15 +2,9 @@ package com.eduinfinity.dimu.translatehelper.adapter.model;
 
 import com.eduinfinity.dimu.translatehelper.utils.Config;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Dimu on 10/23/14.
- */
 public class Resource implements Model {
     private Map<String, String> content = new HashMap<String, String>();
 
@@ -18,6 +12,8 @@ public class Resource implements Model {
     public static final String PROJECT = "project";
     public static final String TRANSLATE = "translate";
     public static final String SOURCE = "source";
+    public static final String VIDEO = "VIDEO";
+
     private int currentStatus = Model.INIT;
     private String projectSlug;
 
@@ -35,11 +31,21 @@ public class Resource implements Model {
         currentStatus = t;
     }
 
-
     @Override
-    public String[] getKeys() {
+    public String[] getHTTPKeys() {
         return KEYS;
     }
+
+    @Override
+    public String[] getSaveKeys() {
+        String path = getValue(VIDEO);
+        if (!(path == null || path.equals(""))) {
+            return new String[]{SLUG, NAME, VIDEO};
+        } else {
+            return KEYS;
+        }
+    }
+
 
     public Map<String, String> getContent() {
         return content;
@@ -71,17 +77,19 @@ public class Resource implements Model {
     }
 
 
-    public static  class Source {
-        public Resource resource ;
-        public Source(Resource data ) {
+    public static class Source {
+        public Resource resource;
+
+        public Source(Resource data) {
             this.resource = data;
 
         }
     }
 
     public static class Translate {
-        public Resource resource ;
-        public Translate(Resource data ) {
+        public Resource resource;
+
+        public Translate(Resource data) {
             this.resource = data;
 
         }

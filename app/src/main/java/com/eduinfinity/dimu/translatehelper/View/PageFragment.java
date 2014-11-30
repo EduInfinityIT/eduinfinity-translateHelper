@@ -57,7 +57,6 @@ public class PageFragment extends Fragment {
         TextView e = (TextView) view.findViewById(R.id.textView_endTime);
         TextView l = (TextView) view.findViewById(R.id.textView_lineString);
         trans = (EditText) view.findViewById(R.id.editText_trans);
-
         index.setText("" + line.index);
         s.setText("" + SrtParse.convertTime2String(line.startTime));
         e.setText("" + SrtParse.convertTime2String(line.endTime));
@@ -82,8 +81,6 @@ public class PageFragment extends Fragment {
 
     @Override
     public void onPause() {
-
-        Log.i("Fragment", "Fragment on pause");
         super.onPause();
     }
 }

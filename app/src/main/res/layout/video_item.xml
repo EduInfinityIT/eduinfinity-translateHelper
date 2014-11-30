@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:background="@color/gray"
+              android:layout_height="40dp">
+    <ImageView android:layout_width="35dp" android:layout_height="35dp"
+               android:src="@drawable/video"
+               android:padding="2dp"/>
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:orientation="vertical">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="27dp"
+                  android:textSize="18dp"
+                  android:id="@+id/name"
+                  android:text="testestet"
+                  android:textColor="@color/littleWhite"
+                  android:padding="2dp"/>
+        <FrameLayout android:layout_width="match_parent" android:layout_height="10dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="7dp"
+                      android:text="1010010101"
+                      android:layout_gravity="left"
+                      android:textColor="@color/littleWhite"
+                      android:id="@+id/size"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="7dp"
+                      android:text="1010010101"
+                      android:paddingRight="20dp"
+                      android:layout_gravity="right"
+                      android:textColor="@color/littleWhite"
+                      android:id="@+id/duration"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
